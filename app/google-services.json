@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "255620402997",
+    "project_id": "setux-1881",
+    "storage_bucket": "setux-1881.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:255620402997:android:b69809fab5aad87743c67c",
+        "android_client_info": {
+          "package_name": "com.imperial.setux"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "255620402997-073pjalcaa6pda5bdhoc7skugs4kcicd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.imperial.setux",
+            "certificate_hash": "8c2ef7b69558316b3e8abaf4cd9ef620a02b4193"
+          }
+        },
+        {
+          "client_id": "255620402997-85k80mf6i1tst1s4bbmemipmc14e7hdv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCIXoi2-A-pj-Hg-2qDZQSOhIUMepH2KYc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "255620402997-85k80mf6i1tst1s4bbmemipmc14e7hdv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

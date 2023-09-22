@@ -39,4 +39,5 @@
     <string name="diagnosis">Diagnosis</string>
     <string name="details">Details</string>
     <string name="prescription">Prescription</string>
+    <string name="patient_information">Patient Information</string>
 </resources>

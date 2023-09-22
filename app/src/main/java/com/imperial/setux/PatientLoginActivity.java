@@ -24,9 +24,9 @@ public class PatientLoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_patient_login);
         t1 = findViewById(R.id.t1);
         b1 = findViewById(R.id.b1);
-        String aadhaar = "286549103713";
 
         b1.setOnClickListener(view -> {
+            String aadhaar = t1.getText().toString().trim();
             DocumentReference documentReference = firebaseFirestore.collection("Users").document(aadhaar);
             documentReference.get().addOnSuccessListener(documentSnapshot -> {
                 if(documentSnapshot.exists()){

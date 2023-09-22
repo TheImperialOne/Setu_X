@@ -4,7 +4,9 @@ import static java.sql.Types.NULL;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,26 +16,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.auth.User;
 
 public class UserActivity extends AppCompatActivity {
-    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-
-    Button b1, b2;
+    private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user);
-        b1 = findViewById(R.id.b1);
-        b2 = findViewById(R.id.b2);
-
-
-        b1.setOnClickListener(view -> {
-            Intent intent = new Intent(UserActivity.this, PatientLoginActivity.class);
-            startActivity(intent);
-        });
-        b2.setOnClickListener(view -> {
-            Intent intent = new Intent(UserActivity.this, HospitalLoginActivity.class);
-            startActivity(intent);
-        });
     }
 
     @Override
@@ -50,5 +38,15 @@ public class UserActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         }
+    }
+
+    public void gotoPatient(View view) {
+            Intent intent = new Intent(UserActivity.this, PatientLoginActivity.class);
+            startActivity(intent);
+    }
+
+    public void gotoHospital(View view) {
+            Intent intent = new Intent(UserActivity.this, HospitalLoginActivity.class);
+            startActivity(intent);
     }
 }

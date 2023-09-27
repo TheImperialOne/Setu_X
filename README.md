@@ -25,6 +25,7 @@ The Setu_X is a secure platform for patients to store and manage their medical h
 ## Future Features
 
 - Blockchain integration to store the medical history resulting in secure and decentralized storage.
+- Digilocker API integration which provides a rich database
   
 ## Setup
 

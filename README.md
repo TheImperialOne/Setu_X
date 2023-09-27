@@ -1,10 +1,10 @@
-   # Medical History Android Application
+   # Setu_X
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 ## Overview
 
-The Medical History Android Application is a secure platform for patients to store and manage their medical history, including diagnosis, prescriptions, treatment details, and current diagnoses. This information is securely stored on a server and can be accessed by authorized medical professionals at hospitals or clinics using a unique patient identifier (Aadhaar Number). This README provides essential information on setting up, configuring, and using the application.
+The Setu_X is a secure platform for patients to store and manage their medical history, including diagnosis, prescriptions, treatment details, and current diagnoses. This information is securely stored on a server and can be accessed by authorized medical professionals at hospitals or clinics using a unique patient identifier (Aadhaar Number). This README provides essential information on setting up, configuring, and using the application.
 
 ## Features
 

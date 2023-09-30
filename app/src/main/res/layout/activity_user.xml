@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center"
     android:orientation="vertical"
     tools:context=".UserActivity">
 
@@ -14,27 +15,57 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/t1"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|center_horizontal"
-                android:layout_margin="10dp"
-                android:fontFamily="@font/poppinsmedium"
-                android:text="@string/select_type_of_user"
-                android:textSize="20sp"
+                android:layout_marginTop="50dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center_vertical"
+                    android:elevation="4dp"
+                    android:src="@drawable/setu_x" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="10dp"
+                    android:fontFamily="@font/nuni"
+                    android:text="@string/app_name"
+                    android:textSize="25sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:fontFamily="@font/nuni"
+                android:text="@string/who_are_you"
+                android:textSize="50sp"
+                android:textStyle="bold" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/nuni"
+                android:text="@string/please_select_one_of_the_options"
+                android:textSize="30sp"
                 android:textStyle="bold" />
 
             <LinearLayout
-                android:id="@+id/gender"
+                android:id="@+id/profession"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                android:layout_marginTop="30sp"
-                android:layout_marginEnd="30dp"
+                android:layout_marginTop="10sp"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -43,31 +74,46 @@
                     android:layout_weight="1"
                     android:orientation="vertical">
 
-                    <androidx.cardview.widget.CardView
-                        android:id="@+id/maleGroup"
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/doctorGroup"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:onClick="gotoHospital"
                         app:cardBackgroundColor="#FFFFFF"
                         app:cardCornerRadius="25dp">
 
-                        <ImageView
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
-                            android:layout_gravity="center"
-                            android:layout_marginTop="30dp"
-                            android:layout_marginBottom="20dp"
-                            android:src="@drawable/girldoc" />
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
 
-                    </androidx.cardview.widget.CardView>
+                            <ImageView
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                android:layout_gravity="center"
+                                android:layout_marginStart="25dp"
+                                android:layout_marginTop="30dp"
+                                android:layout_marginBottom="20dp"
+                                android:src="@drawable/girldoc" />
+
+                            <ImageView
+                                android:id="@+id/doctorCheck"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="20dp"
+                                android:layout_marginEnd="10dp"
+                                android:src="@drawable/check"
+                                android:visibility="invisible" />
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:fontFamily="@font/poppinsmedium"
-                        android:text="@string/hospital"
+                        android:fontFamily="@font/nuni"
+                        android:text="@string/hospital_admin"
                         android:textColor="#000000"
                         android:textSize="20sp" />
 
@@ -79,35 +125,66 @@
                     android:layout_weight="1"
                     android:orientation="vertical">
 
-                    <androidx.cardview.widget.CardView
-                        android:id="@+id/femaleGroup"
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/studentGroup"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:onClick="gotoPatient"
                         app:cardBackgroundColor="#FFFFFF"
                         app:cardCornerRadius="25dp">
 
-                        <ImageView
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
-                            android:layout_marginTop="30dp"
-                            android:layout_marginBottom="20dp"
-                            android:src="@drawable/person" />
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
 
+                            <ImageView
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                android:layout_gravity="center"
+                                android:layout_marginStart="25dp"
+                                android:layout_marginTop="30dp"
+                                android:layout_marginBottom="20dp"
+                                android:src="@drawable/person" />
 
-                    </androidx.cardview.widget.CardView>
+                            <ImageView
+                                android:id="@+id/studentCheck"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="20dp"
+                                android:layout_marginEnd="10dp"
+                                android:src="@drawable/check"
+                                android:visibility="invisible" />
+
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:fontFamily="@font/poppinsmedium"
+                        android:fontFamily="@font/nuni"
                         android:text="@string/patient"
                         android:textColor="#061428"
                         android:textSize="20sp" />
                 </LinearLayout>
             </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/login_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:backgroundTint="@color/green"
+                android:fontFamily="@font/nuni"
+                android:padding="15dp"
+                android:text="@string/next"
+                android:textAllCaps="true"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                app:cornerRadius="15dp" />
+
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

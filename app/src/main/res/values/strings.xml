@@ -22,7 +22,7 @@
     <string name="select_type_of_user">Select type of User</string>
     <string name="title">Title</string>
     <string name="description">Description</string>
-    <string name="enter_your_aadhaar_number">Enter your Aadhaar Number</string>
+    <string name="enter_your_aadhaar_number">Enter your Aadhaar Number:</string>
     <string name="login">Login</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
@@ -40,4 +40,13 @@
     <string name="details">Details</string>
     <string name="prescription">Prescription</string>
     <string name="patient_information">Patient Information</string>
+    <string name="by_team_phoenix">By Team Phoenix</string>
+    <string name="who_are_you">Who are you?</string>
+    <string name="please_select_one_of_the_options">Please select one of the options:</string>
+    <string name="hospital_admin">Hospital Admin</string>
+    <string name="next">Next</string>
+    <string name="welcome">Welcome</string>
+    <string name="login_to_your_account">Login to your account</string>
+    <string name="enter_the_otp_received">Enter the OTP received:</string>
+    <string name="aadhaar_number">Aadhaar Number</string>
 </resources>

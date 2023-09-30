@@ -8,20 +8,30 @@
 
     <ImageView
         android:id="@+id/launcher_app_icon"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_centerInParent="true"
-        android:src="@drawable/baseline_local_hospital_24" />
+        android:src="@drawable/setu_x" />
 
     <TextView
         android:id="@+id/text_app_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:fontFamily="@font/poppinsmedium"
+        android:layout_above="@+id/teamName"
+        android:layout_marginBottom="5dp"
         android:text="@string/app_name"
         android:textSize="30sp"
         android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/teamName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="75dp"
+        android:text="@string/by_team_phoenix"
+        android:textSize="20sp" />
 
 </RelativeLayout>

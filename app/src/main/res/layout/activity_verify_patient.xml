@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".patient.PatientLoginActivity">
+    tools:context=".hospital.VerifyPatientActivity">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -51,7 +51,7 @@
                 android:fontFamily="@font/nuni"
                 android:layout_gravity="center_horizontal"
                 android:textColor="@color/black"
-                android:text="@string/welcome"
+                android:text="Welcome Admin!"
                 android:textSize="40sp"/>
 
             <com.google.android.material.textview.MaterialTextView
@@ -60,7 +60,7 @@
                 android:layout_marginTop="5dp"
                 android:fontFamily="@font/nuni"
                 android:layout_gravity="center_horizontal"
-                android:text="@string/login_to_your_account"
+                android:text="Verify patient"
                 android:textColor="@color/black"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -70,15 +70,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:fontFamily="@font/nuni"
-                android:text="@string/enter_your_aadhaar_number"
+                android:text="Enter the patient's Aadhaar Number:"
                 android:textSize="20sp"
                 android:textColor="@color/black"/>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:hintEnabled="false"
-                app:passwordToggleEnabled="true">
+                app:hintEnabled="false">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/aadhaarInput"
@@ -88,13 +87,13 @@
                     android:background="@drawable/custom_edittext"
                     android:drawablePadding="8dp"
                     android:hint="@string/aadhaar_number"
-                    android:inputType="numberPassword"
+                    android:inputType="number"
                     android:longClickable="false"
                     android:padding="15dp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/getOTP"
+                android:id="@+id/sendOTP"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
@@ -126,11 +125,10 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:hintEnabled="false"
-                    app:passwordToggleEnabled="true">
+                    app:hintEnabled="false">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/OTP"
+                        android:id="@+id/inputOTP"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="15dp"
@@ -143,7 +141,7 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/login_button"
+                    android:id="@+id/verify_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
@@ -151,7 +149,7 @@
                     android:fontFamily="@font/nuni"
                     android:padding="10dp"
                     android:textColor="@color/white"
-                    android:text="@string/login"
+                    android:text="@string/verify_and_proceed"
                     android:textAllCaps="true"
                     android:textSize="20sp"
                     android:textStyle="bold"

@@ -1,12 +1,12 @@
-package com.imperial.setux;
+package com.imperial.setux.patient;
 
 import com.google.firebase.firestore.Exclude;
 
-public class Patient {
+public class PatientDiagnosis {
     private String documentId;
     private String Date, Hospital, Details, Diagnosis, Prescription;
 
-    public Patient() {
+    public PatientDiagnosis() {
         //public no-arg constructor needed
     }
 
@@ -19,7 +19,7 @@ public class Patient {
         this.documentId = documentId;
     }
 
-    public Patient(String Date, String Hospital, String Details, String Diagnosis, String Prescription) {
+    public PatientDiagnosis(String Date, String Hospital, String Details, String Diagnosis, String Prescription) {
         this.Date = Date;
         this.Hospital = Hospital;
         this.Details = Details;

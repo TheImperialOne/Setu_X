@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class RecyclerRowAdapter extends RecyclerView.Adapter<RecyclerRowAdapter.ViewHolder> {
     Context context;
     ArrayList<RowModel> rowModelArrayList;
-    RecyclerRowAdapter(Context context, ArrayList<RowModel> rowModelArrayList){
+    public RecyclerRowAdapter(Context context, ArrayList<RowModel> rowModelArrayList){
         this.context = context;
         this.rowModelArrayList = rowModelArrayList;
     }

@@ -1,4 +1,4 @@
-package com.imperial.setux;
+package com.imperial.setux.hospital;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +15,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.imperial.setux.R;
 
 import java.util.Objects;
 
@@ -33,10 +34,10 @@ public class HospitalLoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hospital_login);
 
-        etLoginEmail = findViewById(R.id.etLoginEmail);
-        etLoginPassword = findViewById(R.id.etLoginPass);
-        tvRegisterHere = findViewById(R.id.tvRegisterHere);
-        btnLogin = findViewById(R.id.btnLogin);
+        etLoginEmail = findViewById(R.id.login_email);
+        etLoginPassword = findViewById(R.id.login_password);
+        tvRegisterHere = findViewById(R.id.signUpRedirectText);
+        btnLogin = findViewById(R.id.login_button);
 
         mAuth = FirebaseAuth.getInstance();
 

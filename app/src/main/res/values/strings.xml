@@ -49,4 +49,6 @@
     <string name="login_to_your_account">Login to your account</string>
     <string name="enter_the_otp_received">Enter the OTP received:</string>
     <string name="aadhaar_number">Aadhaar Number</string>
+    <string name="view_medical_history">View Medical History</string>
+    <string name="verify_and_proceed">Verify and proceed</string>
 </resources>

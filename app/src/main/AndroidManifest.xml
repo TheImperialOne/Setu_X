@@ -6,40 +6,45 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@drawable/baseline_local_hospital_24"
+        android:icon="@drawable/setu_x"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.SetuX"
         tools:targetApi="31">
         <activity
-            android:name=".AddPatientInfoActivity"
+            android:name=".patient.MedicalHistoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".hospital.AddPatientInfoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".hospital.VerifyPatientActivity"
             android:exported="false"
-            android:parentActivityName=".HospitalDashboardActivity" />
+            android:noHistory="true"/>
         <activity
-            android:name=".VerifyUserActivity"
+            android:name=".hospital.HospitalRegisterActivity"
             android:exported="false" />
         <activity
-            android:name=".HospitalRegisterActivity"
+            android:name=".hospital.HospitalDashboardActivity"
             android:exported="false" />
         <activity
-            android:name=".HospitalDashboardActivity"
+            android:name=".patient.ManageOTP"
             android:exported="false" />
         <activity
-            android:name=".ManageOTP"
-            android:exported="false" />
-        <activity
-            android:name=".HospitalLoginActivity"
-            android:exported="false" />
-        <activity
-            android:name=".AddDiagnosisActivity"
+            android:name=".hospital.HospitalLoginActivity"
             android:exported="false"
-            android:parentActivityName=".AddPatientInfoActivity" />
+            android:noHistory="true"/>
         <activity
-            android:name=".PatientDashboard"
+            android:name=".hospital.AddDiagnosisActivity"
+            android:exported="false"
+            android:parentActivityName=".hospital.AddPatientInfoActivity" />
+        <activity
+            android:name=".patient.PatientDashboard"
             android:exported="false" />
         <activity
-            android:name=".PatientLoginActivity"
-            android:exported="false" />
+            android:name=".patient.PatientLoginActivity"
+            android:exported="false"
+            android:noHistory="true"/>
         <activity
             android:name=".UserActivity"
             android:exported="false" />

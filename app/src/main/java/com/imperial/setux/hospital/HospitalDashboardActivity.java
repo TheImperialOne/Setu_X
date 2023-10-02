@@ -1,38 +1,29 @@
-package com.imperial.setux;
+package com.imperial.setux.hospital;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
+import com.imperial.setux.R;
+import com.imperial.setux.UserActivity;
 
 public class HospitalDashboardActivity extends AppCompatActivity {
-
-    private static final String TAG = "HospitalDashboardActivity";
-    private static final String HOSPITALNAME = "HospitalName";
-    private static final String EMAIL = "Email";
-    private static final String REGISTRATION = "Registration";
-    //String getEmail= getIntent().getStringExtra("email");
+    String getEmail;
     Button btnLogOut;
     FirebaseAuth mAuth;
     Button addNewPatient;
     TextView textViewData;
-    CollectionReference collectionReference = FirebaseFirestore.getInstance().collection("Hospitals");
+    CollectionReference collectionReference;
+    String HospitalName, Email, Registration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,19 +32,19 @@ public class HospitalDashboardActivity extends AppCompatActivity {
         textViewData = findViewById(R.id.textView);
         addNewPatient = findViewById(R.id.addPatient);
         btnLogOut = findViewById(R.id.btnLogout);
+        getEmail = getIntent().getStringExtra("email");
         mAuth = FirebaseAuth.getInstance();
-        final String[] HospitalName = new String[1];
-        final String[] Registration = new String[1];
-        final String[] Email = new String[1];
+        collectionReference = FirebaseFirestore.getInstance().collection("Hospitals");
 
         btnLogOut.setOnClickListener(view -> {
             mAuth.signOut();
             startActivity(new Intent(HospitalDashboardActivity.this, UserActivity.class));
         });
         addNewPatient.setOnClickListener(view -> {
-            startActivity(new Intent(HospitalDashboardActivity.this, VerifyUserActivity.class).putExtra("Hospital", Hospital.class));
+            startActivity(new Intent(HospitalDashboardActivity.this, VerifyPatientActivity.class).putExtra("HospitalName", HospitalName));
         });
     }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -65,16 +56,31 @@ public class HospitalDashboardActivity extends AppCompatActivity {
             if (e != null) {
                 return;
             }
+            assert queryDocumentSnapshots != null;
             for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                 Hospital hospital = documentSnapshot.toObject(Hospital.class);
                 hospital.setDocumentId(documentSnapshot.getId());
 
                 String documentId = hospital.getDocumentId();
-                String HospitalName = hospital.getHospitalName();
-                String Email = hospital.getEmail();
-                String Registration = hospital.getRegistration();
+                HospitalName = hospital.getName();
+                Email = hospital.getEmail();
+                Registration = hospital.getRegistration();
                 textViewData.setText("Name: " + HospitalName + "\n" + "Registration: " + Registration + "\n" + "Email: " + Email);
             }
         });
+    }
+    private long pressedTime;
+    @Override
+    public void onBackPressed(){
+        if (pressedTime + 2000 > System.currentTimeMillis()){
+            Intent a = new Intent(Intent.ACTION_MAIN);
+            a.addCategory(Intent.CATEGORY_HOME);
+            a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(a);
+        }
+        else {
+            Toast.makeText(getBaseContext(), "Press back again to exit", Toast.LENGTH_SHORT).show();
+        }
+        pressedTime = System.currentTimeMillis();
     }
 }

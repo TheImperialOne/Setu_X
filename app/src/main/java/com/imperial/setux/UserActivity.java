@@ -1,52 +1,76 @@
 package com.imperial.setux;
 
-import static java.sql.Types.NULL;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.auth.User;
+import com.imperial.setux.hospital.HospitalDashboardActivity;
+import com.imperial.setux.hospital.HospitalLoginActivity;
+import com.imperial.setux.patient.PatientDashboard;
+import com.imperial.setux.patient.PatientLoginActivity;
 
 public class UserActivity extends AppCompatActivity {
-    private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-
+    private FirebaseUser firebaseUser;
+    ImageView hospitalCheck, patientCheck;
+    CardView hospitalGroup, patientGroup;
+    Button next;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user);
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
+        hospitalCheck = findViewById(R.id.doctorCheck);
+        patientCheck = findViewById(R.id.patientCheck);
+        hospitalGroup = findViewById(R.id.hospitalGroup);
+        patientGroup = findViewById(R.id.patientGroup);
+        next = findViewById(R.id.nextButton);
+        hospitalGroup.setOnClickListener(view->{
+            if(hospitalCheck.getVisibility()== View.VISIBLE){
+                hospitalCheck.setVisibility(View.INVISIBLE);
+                next.setVisibility(View.INVISIBLE);
+            } else{
+                hospitalCheck.setVisibility(View.VISIBLE);
+                patientCheck.setVisibility(View.INVISIBLE);
+                next.setVisibility(View.VISIBLE);
+            }
+        });
+        patientGroup.setOnClickListener(view->{
+            if(patientCheck.getVisibility()==View.VISIBLE){
+                patientCheck.setVisibility(View.INVISIBLE);
+                next.setVisibility(View.INVISIBLE);
+            } else{
+                patientCheck.setVisibility(View.VISIBLE);
+                hospitalCheck.setVisibility(View.INVISIBLE);
+                next.setVisibility(View.VISIBLE);
+            }
+        });
+        next.setOnClickListener(view->{
+            if(hospitalCheck.getVisibility()==View.VISIBLE) startActivity(new Intent(getApplicationContext(), HospitalLoginActivity.class));
+            else if(patientCheck.getVisibility()==View.VISIBLE) startActivity(new Intent(getApplicationContext(), PatientLoginActivity.class));
+            else Toast.makeText(getApplicationContext(), "You must choose one of the options to proceed further!", Toast.LENGTH_LONG).show();
+        });
     }
-
+    private long pressedTime;
     @Override
-    protected void onStart() {
-        super.onStart();
-        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-        if (firebaseUser != null) {
-            if (firebaseUser.getEmail() != null) {
-                Intent intent = new Intent(UserActivity.this, HospitalLoginActivity.class);
-                startActivity(intent);
-            }
-            if (firebaseUser.getPhoneNumber() != null) {
-                Intent intent = new Intent(UserActivity.this, PatientDashboard.class);
-                startActivity(intent);
-            }
+    public void onBackPressed(){
+        if (pressedTime + 2000 > System.currentTimeMillis()){
+            Intent a = new Intent(Intent.ACTION_MAIN);
+            a.addCategory(Intent.CATEGORY_HOME);
+            a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(a);
         }
-    }
-
-    public void gotoPatient(View view) {
-            Intent intent = new Intent(UserActivity.this, PatientLoginActivity.class);
-            startActivity(intent);
-    }
-
-    public void gotoHospital(View view) {
-            Intent intent = new Intent(UserActivity.this, HospitalLoginActivity.class);
-            startActivity(intent);
+        else {
+            Toast.makeText(getBaseContext(), "Press back again to exit", Toast.LENGTH_SHORT).show();
+        }
+        pressedTime = System.currentTimeMillis();
     }
 }

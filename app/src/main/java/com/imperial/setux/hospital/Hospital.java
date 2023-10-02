@@ -1,10 +1,10 @@
-package com.imperial.setux;
+package com.imperial.setux.hospital;
 
 import com.google.firebase.firestore.Exclude;
 
 public class Hospital {
     private String documentId;
-    private String HospitalName, Registration, Email;
+    private String Name, Registration, Email;
 
     public Hospital() {
         //public no-arg constructor needed
@@ -21,7 +21,7 @@ public class Hospital {
 
     public Hospital(String Registration, String HospitalName, String Email) {
         this.Registration = Registration;
-        this.HospitalName = HospitalName;
+        this.Name = HospitalName;
         this.Email = Email;
     }
 
@@ -29,8 +29,8 @@ public class Hospital {
         return Registration;
     }
 
-    public String getHospitalName() {
-        return HospitalName;
+    public String getName() {
+        return Name;
     }
 
     public String getEmail() {

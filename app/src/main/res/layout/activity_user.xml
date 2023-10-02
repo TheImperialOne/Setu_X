@@ -75,7 +75,7 @@
                     android:orientation="vertical">
 
                     <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/doctorGroup"
+                        android:id="@+id/hospitalGroup"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
@@ -126,7 +126,7 @@
                     android:orientation="vertical">
 
                     <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/studentGroup"
+                        android:id="@+id/patientGroup"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -148,7 +148,7 @@
                                 android:src="@drawable/person" />
 
                             <ImageView
-                                android:id="@+id/studentCheck"
+                                android:id="@+id/patientCheck"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="20dp"
@@ -171,13 +171,14 @@
             </LinearLayout>
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/login_button"
+                android:id="@+id/nextButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:backgroundTint="@color/green"
                 android:fontFamily="@font/nuni"
                 android:padding="15dp"
+                android:textColor="@color/white"
                 android:text="@string/next"
                 android:textAllCaps="true"
                 android:textSize="20sp"

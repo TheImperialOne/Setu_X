@@ -1,4 +1,4 @@
-package com.imperial.setux;
+package com.imperial.setux.patient;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,6 +13,7 @@ import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.imperial.setux.R;
 
 import java.util.concurrent.TimeUnit;
 

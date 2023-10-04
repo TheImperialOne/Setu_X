@@ -62,7 +62,7 @@ public class HospitalDashboardActivity extends AppCompatActivity {
                 hospital.setDocumentId(documentSnapshot.getId());
 
                 String documentId = hospital.getDocumentId();
-                HospitalName = hospital.getName();
+                HospitalName = hospital.getHospitalName();
                 Email = hospital.getEmail();
                 Registration = hospital.getRegistration();
                 textViewData.setText("Name: " + HospitalName + "\n" + "Registration: " + Registration + "\n" + "Email: " + Email);

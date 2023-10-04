@@ -66,7 +66,7 @@
                     android:drawableStart="@drawable/baseline_local_hospital_24"
                     android:drawablePadding="8dp"
                     android:hint="Hospital Name"
-                    android:inputType="textEmailAddress"
+                    android:inputType="text"
                     android:padding="15dp" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -84,7 +84,7 @@
                     android:drawableStart="@drawable/baseline_app_registration_24"
                     android:drawablePadding="8dp"
                     android:hint="Registration no."
-                    android:inputType="textEmailAddress"
+                    android:inputType="text"
                     android:padding="15dp" />
             </com.google.android.material.textfield.TextInputLayout>
 

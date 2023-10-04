@@ -1,10 +1,12 @@
-package com.imperial.setux.patient;
+package com.imperial.setux.hospital;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
@@ -25,30 +27,37 @@ import com.imperial.setux.patient.PatientDiagnosis;
 
 import java.util.ArrayList;
 
-public class MedicalHistoryActivity extends AppCompatActivity implements SelectListener {
+public class PatientMedicalHistory extends AppCompatActivity implements SelectListener {
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
     DocumentReference documentReference;
     CollectionReference historyReference;
     RecyclerView recyclerView;
     ArrayList<PatientDiagnosis> arrayList = new ArrayList<>();
+    Button addRecord;
     private String TAG = "MedicalHistoryActivity";
     CardView goBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_medical_history);
+        setContentView(R.layout.activity_patient_medical_history);
         String getAadhaar = getIntent().getStringExtra("aadhaar");
+        String hospitalName = getIntent().getStringExtra("hospitalName");
+        String bucketID = getIntent().getStringExtra("bucketID");
         documentReference = firebaseFirestore.collection("Users").document(String.valueOf(getAadhaar));
         historyReference = documentReference.collection("Medical History");
         recyclerView = findViewById(R.id.recycleView);
-
+        addRecord = findViewById(R.id.addNew);
         goBack = findViewById(R.id.back);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         goBack.setOnClickListener(view -> {
             onBackPressed();
         });
+        addRecord.setOnClickListener(view -> {
+            startActivity(new Intent(getApplicationContext(), AddDiagnosisActivity.class).putExtra("aadhaar", getAadhaar).putExtra("hospitalName", hospitalName).putExtra("bucketID", bucketID));
+        });
     }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -72,8 +81,8 @@ public class MedicalHistoryActivity extends AppCompatActivity implements SelectL
             }
         });
         RecyclerRowAdapter recyclerRowAdapter = new RecyclerRowAdapter(this, arrayList, this);
-        recyclerView.setAdapter(recyclerRowAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        recyclerView.setAdapter(recyclerRowAdapter);
     }
 
     @Override

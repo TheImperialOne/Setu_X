@@ -19,8 +19,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         new Handler().postDelayed(() -> {
+            FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
             if (firebaseUser != null) {
                 if (firebaseUser.getEmail() != null) {
                     Intent intent = new Intent(getApplicationContext(), HospitalDashboardActivity.class);
@@ -30,10 +30,11 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent = new Intent(getApplicationContext(), PatientDashboard.class);
                     startActivity(intent);
                 }
+            }else {
+                Intent loginIntent = new Intent(MainActivity.this, UserActivity.class);
+                startActivity(loginIntent);
+                finish();
             }
-            Intent loginIntent = new Intent(MainActivity.this, UserActivity.class);
-            startActivity(loginIntent);
-            finish();
         }, SPLASH_SCREEN_TIMEOUT);
     }
 }

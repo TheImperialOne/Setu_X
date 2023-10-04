@@ -24,7 +24,7 @@ public class HospitalRegisterActivity extends AppCompatActivity {
     TextInputEditText etRegEmail, etRegPassword, inputHospitalName, inputRegistration, etRegPasswordConfirm;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     private static final String TAG = "HospitalRegisterActivity";
-    private static final String NAME = "Name";
+    private static final String NAME = "HospitalName";
     private static final String REGISTRATION = "Registration";
     private static final String EMAIL = "Email";
     private static final String PASSWORD = "Password";

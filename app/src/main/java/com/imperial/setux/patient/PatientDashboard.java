@@ -72,7 +72,7 @@ public class PatientDashboard extends AppCompatActivity {
             finish();
         });
         btnMedicalHistory.setOnClickListener(view->{
-            startActivity(new Intent(getApplicationContext(),MedicalHistoryActivity.class).putExtra("aadhaar",getAadhaar));
+            startActivity(new Intent(getApplicationContext(), MedicalHistoryActivity.class).putExtra("aadhaar",getAadhaar));
         });
     }
     private long pressedTime;

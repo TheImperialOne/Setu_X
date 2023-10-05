@@ -1,5 +1,6 @@
 package com.imperial.setux.hospital;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,7 +22,6 @@ import com.imperial.setux.R;
 
 import org.json.JSONObject;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -42,6 +42,7 @@ public class AddDiagnosisActivity extends AppCompatActivity {
     private static final String PRESCRIPTION = "Prescription";
     private static final String DOCTOR = "Doctor";
     private static final String TREATMENT = "Treatment";
+    private static final String FILE_NAME = "my_json_file.json";
 
     private EditText editDiagnosis, editDetails, editPrescription, editDoctor, editTreatment;
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -85,20 +86,9 @@ public class AddDiagnosisActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            String filename = date + getRandomString(6) + ".json"; // Name of your JSON file
             String jsonString = jsonObject.toString();
-            File file = new File(getApplicationContext().getFilesDir(), filename);
-            FileWriter fileWriter = null;
             try {
-                fileWriter = new FileWriter(file);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-            try {
-                bufferedWriter.write(jsonString);
-                bufferedWriter.close();
-                uploadObject(file, filename, bucketID);
+                save(getApplicationContext(), jsonString);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -128,15 +118,15 @@ public class AddDiagnosisActivity extends AppCompatActivity {
 
     }
 
-    void uploadObject(File file, String filename, String bucketID) {
+    void uploadObject(File file, String bucketID) {
         try {
             AmazonS3 s3Client = AmazonS3ClientBuilder.standard()
                     .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("s3.filebase.com", "us-east-1"))
                     .build();
 
-            s3Client.putObject(bucketID, filename, "Uploaded String Object");
+            s3Client.putObject(bucketID, AddDiagnosisActivity.FILE_NAME, "Uploaded String Object");
 
-            PutObjectRequest request = new PutObjectRequest(bucketID, filename, file);
+            PutObjectRequest request = new PutObjectRequest(bucketID, AddDiagnosisActivity.FILE_NAME, file);
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentType("plain/text");
             metadata.addUserMetadata("title", date);
@@ -145,6 +135,15 @@ public class AddDiagnosisActivity extends AppCompatActivity {
         } catch (SdkClientException e) {
             e.printStackTrace();
         }
+    }
+    public void save(Context context, String jsonString) throws IOException {
+        File rootFolder = context.getExternalFilesDir(null);
+        File jsonFile = new File(rootFolder, date+getRandomString(5)+".json");
+        FileWriter writer = new FileWriter(jsonFile);
+        writer.write(jsonString);
+        uploadObject(jsonFile, bucketID);
+        writer.close();
+        //or IOUtils.closeQuietly(writer);
     }
 
     String getRandomString(int n) {

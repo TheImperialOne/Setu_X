@@ -1,12 +1,13 @@
 package com.imperial.setux.hospital;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -23,7 +24,13 @@ public class HospitalDashboardActivity extends AppCompatActivity {
     Button addNewPatient;
     TextView textViewData;
     CollectionReference collectionReference;
-    String HospitalName, Email, Registration;
+    String HospitalName, Email, Registration, IsAdmin = "No", AdminNo;
+    private static final String TAG= "HospitalDashboardActivity.java";
+    private static final String HOSPITAL_NAME= "HospitalName";
+    private static final String EMAIL= "Email";
+    private static final String IS_ADMIN= "IsAdmin";
+    private static final String REGISTRATION= "Registration";
+    private static final String ADMIN_NO= "AdminNo";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,12 +67,16 @@ public class HospitalDashboardActivity extends AppCompatActivity {
             for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                 Hospital hospital = documentSnapshot.toObject(Hospital.class);
                 hospital.setDocumentId(documentSnapshot.getId());
-
-                String documentId = hospital.getDocumentId();
-                HospitalName = hospital.getHospitalName();
-                Email = hospital.getEmail();
-                Registration = hospital.getRegistration();
-                textViewData.setText("Name: " + HospitalName + "\n" + "Registration: " + Registration + "\n" + "Email: " + Email);
+                HospitalName = documentSnapshot.getString(HOSPITAL_NAME);
+                Email = documentSnapshot.getString(EMAIL);
+                Registration = documentSnapshot.getString(REGISTRATION);
+                IsAdmin = documentSnapshot.getString(IS_ADMIN);
+                if(IsAdmin.equals("Yes")) {
+                    AdminNo = documentSnapshot.getString(ADMIN_NO);
+                    textViewData.setText("Name: " + HospitalName + "\n" + "Registration: " + Registration + "\n" + "Email: " + Email+ "\n" + "Is Admin: " + IsAdmin+ "\n" + "Admin Number: " + AdminNo);
+                }else{
+                    textViewData.setText("Name: " + HospitalName + "\n" + "Registration: " + Registration + "\n" + "Email: " + Email+ "\n" + "Is Admin: " + IsAdmin);
+                }
             }
         });
     }

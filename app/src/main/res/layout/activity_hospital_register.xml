@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
+    android:animateLayoutChanges="true"
     tools:context=".hospital.HospitalRegisterActivity">
 
     <ScrollView
@@ -84,7 +85,64 @@
                     android:drawableStart="@drawable/baseline_app_registration_24"
                     android:drawablePadding="8dp"
                     android:hint="Registration no."
-                    android:inputType="text"
+                    android:inputType="number"
+                    android:padding="15dp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="25dp"
+                    android:fontFamily="@font/nuni"
+                    android:text="Does the hospital have Admin rights?"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <RadioGroup
+                    android:id="@+id/groupradio"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.radiobutton.MaterialRadioButton
+                        android:id="@+id/yes"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:onClick="yes"
+                        android:text="Yes" />
+
+                    <com.google.android.material.radiobutton.MaterialRadioButton
+                        android:id="@+id/no"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:onClick="no"
+                        android:text="No" />
+                </RadioGroup>
+            </LinearLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:hintEnabled="false">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/inputAdminNo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="25dp"
+                    android:background="@drawable/custom_edittext"
+                    android:drawableStart="@drawable/baseline_app_registration_24"
+                    android:drawablePadding="8dp"
+                    android:hint="Admin no."
+                    android:visibility="gone"
+                    android:inputType="number"
                     android:padding="15dp" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -155,6 +213,7 @@
                 android:fontFamily="@font/nuni"
                 android:padding="20dp"
                 android:text="@string/register"
+                android:textColor="@color/white"
                 android:textAllCaps="true"
                 android:textSize="20sp"
                 android:textStyle="bold"
@@ -165,6 +224,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
                 android:orientation="horizontal">
 
                 <com.google.android.material.textview.MaterialTextView

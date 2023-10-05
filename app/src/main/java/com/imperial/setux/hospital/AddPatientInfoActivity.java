@@ -44,8 +44,6 @@ public class AddPatientInfoActivity extends AppCompatActivity {
     private static final String PHONE = "Phone";
     private static final String GENDER = "Gender";
     private static final String BLOOD = "BloodGroup";
-    private static final String BUCKETID = "BucketID";
-    private String BucketID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +70,6 @@ public class AddPatientInfoActivity extends AppCompatActivity {
                         String Phone = documentSnapshot.getString(PHONE);
                         String Gender = documentSnapshot.getString(GENDER);
                         String BloodGroup = documentSnapshot.getString(BLOOD);
-                        BucketID = documentSnapshot.getString(BUCKETID);
                         userName.setText(Name);
                         userPhone.setText(Phone);
                         userDOB.setText(DOB);
@@ -90,7 +87,7 @@ public class AddPatientInfoActivity extends AppCompatActivity {
                 });
 
         viewHistory.setOnClickListener(view->{
-            startActivity(new Intent(getApplicationContext(), PatientMedicalHistory.class).putExtra("aadhaar",getAadhaar).putExtra("hospitalName",hospitalName).putExtra("bucketID",BucketID));
+            startActivity(new Intent(getApplicationContext(), PatientMedicalHistory.class).putExtra("aadhaar",getAadhaar).putExtra("hospitalName",hospitalName));
         });
     }
 }

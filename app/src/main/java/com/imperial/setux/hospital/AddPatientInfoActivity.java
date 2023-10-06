@@ -37,6 +37,7 @@ public class AddPatientInfoActivity extends AppCompatActivity {
     CollectionReference historyReference;
     String hospitalName;
     String getAadhaar;
+    String isAdmin;
     private static final String TAG = "AddPatientInfoActivity";
     private static final String NAME = "Name";
     private static final String AADHAAR = "Aadhaar";
@@ -51,6 +52,7 @@ public class AddPatientInfoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_patient_info);
         hospitalName = getIntent().getStringExtra("hospitalName");
         getAadhaar = getIntent().getStringExtra("aadhaar");
+        isAdmin = getIntent().getStringExtra("isAdmin");
         documentReference = firebaseFirestore.collection("Users").document(getAadhaar);
         historyReference = documentReference.collection("Medical History");
         userName = findViewById(R.id.userName);
@@ -87,7 +89,8 @@ public class AddPatientInfoActivity extends AppCompatActivity {
                 });
 
         viewHistory.setOnClickListener(view->{
-            startActivity(new Intent(getApplicationContext(), PatientMedicalHistory.class).putExtra("aadhaar",getAadhaar).putExtra("hospitalName",hospitalName));
+            startActivity(new Intent(getApplicationContext(), PatientMedicalHistory.class).putExtra("aadhaar",getAadhaar).putExtra("hospitalName",hospitalName).putExtra("isAdmin",isAdmin));
         });
     }
+
 }

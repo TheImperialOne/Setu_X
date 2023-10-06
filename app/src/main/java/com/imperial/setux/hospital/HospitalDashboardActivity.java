@@ -24,7 +24,7 @@ public class HospitalDashboardActivity extends AppCompatActivity {
     Button addNewPatient;
     TextView textViewData;
     CollectionReference collectionReference;
-    String HospitalName, Email, Registration, IsAdmin = "No", AdminNo;
+    String HospitalName, Email, Registration, IsAdmin, AdminNo;
     private static final String TAG= "HospitalDashboardActivity.java";
     private static final String HOSPITAL_NAME= "HospitalName";
     private static final String EMAIL= "Email";
@@ -48,7 +48,7 @@ public class HospitalDashboardActivity extends AppCompatActivity {
             startActivity(new Intent(HospitalDashboardActivity.this, UserActivity.class));
         });
         addNewPatient.setOnClickListener(view -> {
-            startActivity(new Intent(HospitalDashboardActivity.this, VerifyPatientActivity.class).putExtra("HospitalName", HospitalName));
+            startActivity(new Intent(HospitalDashboardActivity.this, VerifyPatientActivity.class).putExtra("HospitalName", HospitalName).putExtra("IsAdmin",IsAdmin));
         });
     }
 
@@ -71,6 +71,7 @@ public class HospitalDashboardActivity extends AppCompatActivity {
                 Email = documentSnapshot.getString(EMAIL);
                 Registration = documentSnapshot.getString(REGISTRATION);
                 IsAdmin = documentSnapshot.getString(IS_ADMIN);
+                assert IsAdmin != null;
                 if(IsAdmin.equals("Yes")) {
                     AdminNo = documentSnapshot.getString(ADMIN_NO);
                     textViewData.setText("Name: " + HospitalName + "\n" + "Registration: " + Registration + "\n" + "Email: " + Email+ "\n" + "Is Admin: " + IsAdmin+ "\n" + "Admin Number: " + AdminNo);

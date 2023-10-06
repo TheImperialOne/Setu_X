@@ -109,7 +109,7 @@ public class HospitalRegisterActivity extends AppCompatActivity {
                     record.put(EMAIL, email);
                     record.put(PASSWORD, password);
                     record.put(IS_ADMIN, isAdmin);
-                    if (isAdmin.equals(true)) record.put(ADMIN_NO, adminNo);
+                    if (isAdmin.equals("Yes")) record.put(ADMIN_NO, adminNo);
                     db.collection("Hospitals").document(email).set(record)
                             .addOnSuccessListener(aVoid -> Toast.makeText(HospitalRegisterActivity.this, "Record saved", Toast.LENGTH_SHORT).show())
                             .addOnFailureListener(e -> {

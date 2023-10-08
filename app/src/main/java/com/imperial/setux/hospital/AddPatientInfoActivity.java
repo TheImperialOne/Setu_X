@@ -13,6 +13,7 @@ import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,13 +32,13 @@ import java.util.ArrayList;
 public class AddPatientInfoActivity extends AppCompatActivity {
 
     Button viewHistory;
-    MaterialTextView userName, userDOB, userBloodGroup, userPhone, userAadhaar, userGender, userBucketID;
+    MaterialTextView userName, userDOB, userBloodGroup, userPhone, userAadhaar, userGender;
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
     DocumentReference documentReference;
     CollectionReference historyReference;
     String hospitalName;
     String getAadhaar;
-    String isAdmin;
+    CardView cardView;
     private static final String TAG = "AddPatientInfoActivity";
     private static final String NAME = "Name";
     private static final String AADHAAR = "Aadhaar";
@@ -52,7 +53,6 @@ public class AddPatientInfoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_patient_info);
         hospitalName = getIntent().getStringExtra("hospitalName");
         getAadhaar = getIntent().getStringExtra("aadhaar");
-        isAdmin = getIntent().getStringExtra("isAdmin");
         documentReference = firebaseFirestore.collection("Users").document(getAadhaar);
         historyReference = documentReference.collection("Medical History");
         userName = findViewById(R.id.userName);
@@ -61,8 +61,8 @@ public class AddPatientInfoActivity extends AppCompatActivity {
         userBloodGroup = findViewById(R.id.bloodGroup);
         userPhone = findViewById(R.id.phoneNumber);
         userAadhaar = findViewById(R.id.aadhaarNumber);
-        userBucketID = findViewById(R.id.bucketID);
         viewHistory = findViewById(R.id.viewHistoryButton);
+        cardView = findViewById(R.id.back);
         documentReference.get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
@@ -89,8 +89,10 @@ public class AddPatientInfoActivity extends AppCompatActivity {
                 });
 
         viewHistory.setOnClickListener(view->{
-            startActivity(new Intent(getApplicationContext(), PatientMedicalHistory.class).putExtra("aadhaar",getAadhaar).putExtra("hospitalName",hospitalName).putExtra("isAdmin",isAdmin));
+            startActivity(new Intent(getApplicationContext(), PatientMedicalHistory.class).putExtra("aadhaar",getAadhaar).putExtra("hospitalName",hospitalName));
+        });
+        cardView.setOnClickListener(view->{
+            onBackPressed();
         });
     }
-
 }

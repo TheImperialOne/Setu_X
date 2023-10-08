@@ -1,14 +1,14 @@
 package com.imperial.setux.hospital;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -18,27 +18,23 @@ import com.imperial.setux.R;
 import com.imperial.setux.UserActivity;
 
 public class HospitalDashboardActivity extends AppCompatActivity {
+    MaterialTextView hospitalName, hospitalRegn, hospitalEmail;
     String getEmail;
     Button btnLogOut;
     FirebaseAuth mAuth;
     Button addNewPatient;
-    TextView textViewData;
     CollectionReference collectionReference;
-    String HospitalName, Email, Registration, IsAdmin, AdminNo;
-    private static final String TAG= "HospitalDashboardActivity.java";
-    private static final String HOSPITAL_NAME= "HospitalName";
-    private static final String EMAIL= "Email";
-    private static final String IS_ADMIN= "IsAdmin";
-    private static final String REGISTRATION= "Registration";
-    private static final String ADMIN_NO= "AdminNo";
+    String HospitalName, Email, Registration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hospital_dashboard);
-        textViewData = findViewById(R.id.textView);
-        addNewPatient = findViewById(R.id.addPatient);
-        btnLogOut = findViewById(R.id.btnLogout);
+        hospitalName = findViewById(R.id.name);
+        hospitalRegn = findViewById(R.id.regn);
+        hospitalEmail = findViewById(R.id.email);
+        addNewPatient = findViewById(R.id.addNew);
+        btnLogOut = findViewById(R.id.logout_button);
         getEmail = getIntent().getStringExtra("email");
         mAuth = FirebaseAuth.getInstance();
         collectionReference = FirebaseFirestore.getInstance().collection("Hospitals");
@@ -48,7 +44,7 @@ public class HospitalDashboardActivity extends AppCompatActivity {
             startActivity(new Intent(HospitalDashboardActivity.this, UserActivity.class));
         });
         addNewPatient.setOnClickListener(view -> {
-            startActivity(new Intent(HospitalDashboardActivity.this, VerifyPatientActivity.class).putExtra("HospitalName", HospitalName).putExtra("IsAdmin",IsAdmin));
+            startActivity(new Intent(HospitalDashboardActivity.this, VerifyPatientActivity.class).putExtra("HospitalName", HospitalName));
         });
     }
 
@@ -67,17 +63,14 @@ public class HospitalDashboardActivity extends AppCompatActivity {
             for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                 Hospital hospital = documentSnapshot.toObject(Hospital.class);
                 hospital.setDocumentId(documentSnapshot.getId());
-                HospitalName = documentSnapshot.getString(HOSPITAL_NAME);
-                Email = documentSnapshot.getString(EMAIL);
-                Registration = documentSnapshot.getString(REGISTRATION);
-                IsAdmin = documentSnapshot.getString(IS_ADMIN);
-                assert IsAdmin != null;
-                if(IsAdmin.equals("Yes")) {
-                    AdminNo = documentSnapshot.getString(ADMIN_NO);
-                    textViewData.setText("Name: " + HospitalName + "\n" + "Registration: " + Registration + "\n" + "Email: " + Email+ "\n" + "Is Admin: " + IsAdmin+ "\n" + "Admin Number: " + AdminNo);
-                }else{
-                    textViewData.setText("Name: " + HospitalName + "\n" + "Registration: " + Registration + "\n" + "Email: " + Email+ "\n" + "Is Admin: " + IsAdmin);
-                }
+
+                String documentId = hospital.getDocumentId();
+                HospitalName = hospital.getHospitalName();
+                Email = hospital.getEmail();
+                Registration = hospital.getRegistration();
+                hospitalName.setText(HospitalName);
+                hospitalRegn.setText(Registration);
+                hospitalEmail.setText(Email);
             }
         });
     }

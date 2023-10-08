@@ -4,11 +4,7 @@ import com.google.firebase.firestore.Exclude;
 
 public class Hospital {
     private String documentId;
-    private String HospitalName;
-    private String Registration;
-    private String Email;
-    private String AdminNo;
-    private String IsAdmin;
+    private String HospitalName, Registration, Email;
 
     public Hospital() {
         //public no-arg constructor needed
@@ -23,19 +19,10 @@ public class Hospital {
         this.documentId = documentId;
     }
 
-    public Hospital(String Registration, String HospitalName, String Email, String IsAdmin) {
+    public Hospital(String Registration, String HospitalName, String Email) {
         this.Registration = Registration;
         this.HospitalName = HospitalName;
         this.Email = Email;
-        this.IsAdmin = IsAdmin;
-    }
-
-    public Hospital(String Registration, String HospitalName, String Email, String IsAdmin, String AdminNo) {
-        this.Registration = Registration;
-        this.HospitalName = HospitalName;
-        this.Email = Email;
-        this.IsAdmin = IsAdmin;
-        this.AdminNo = AdminNo;
     }
 
     public String getRegistration() {
@@ -48,14 +35,6 @@ public class Hospital {
 
     public String getEmail() {
         return Email;
-    }
-
-    public String getAdmin() {
-        return IsAdmin;
-    }
-
-    public String getAdminNo() {
-        return AdminNo;
     }
 }
 

@@ -2,14 +2,13 @@ package com.imperial.setux.hospital;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -33,22 +32,18 @@ public class PatientMedicalHistory extends AppCompatActivity implements SelectLi
     DocumentReference documentReference;
     CollectionReference historyReference;
     RecyclerView recyclerView;
-    String DocumentID;
     ArrayList<PatientDiagnosis> arrayList = new ArrayList<>();
     Button addRecord;
-    private final String TAG = "MedicalHistoryActivity";
+    private String TAG = "MedicalHistoryActivity";
     CardView goBack;
-    String isAdmin, hospitalName, getAadhaar;
-    String Date;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient_medical_history);
-        getAadhaar = getIntent().getStringExtra("aadhaar");
-        hospitalName = getIntent().getStringExtra("hospitalName");
-        isAdmin = getIntent().getStringExtra("isAdmin");
+        String getAadhaar = getIntent().getStringExtra("aadhaar");
+        String hospitalName = getIntent().getStringExtra("hospitalName");
+        String bucketID = getIntent().getStringExtra("bucketID");
         documentReference = firebaseFirestore.collection("Users").document(String.valueOf(getAadhaar));
         historyReference = documentReference.collection("Medical History");
         recyclerView = findViewById(R.id.recycleView);
@@ -59,7 +54,7 @@ public class PatientMedicalHistory extends AppCompatActivity implements SelectLi
             onBackPressed();
         });
         addRecord.setOnClickListener(view -> {
-            startActivity(new Intent(getApplicationContext(), AddDiagnosisActivity.class).putExtra("aadhaar", getAadhaar).putExtra("hospitalName", hospitalName));
+            startActivity(new Intent(getApplicationContext(), AddDiagnosisActivity.class).putExtra("aadhaar", getAadhaar).putExtra("hospitalName", hospitalName).putExtra("bucketID", bucketID));
         });
     }
 
@@ -74,8 +69,8 @@ public class PatientMedicalHistory extends AppCompatActivity implements SelectLi
             for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                 PatientDiagnosis patient = documentSnapshot.toObject(PatientDiagnosis.class);
                 patient.setDocumentID(documentSnapshot.getId());
-                DocumentID = patient.getDocumentID();
-                Date = patient.getDate();
+                String DocumentID = patient.getDocumentID();
+                String Date = patient.getDate();
                 String HospitalName = patient.getHospitalName();
                 String Diagnosis = patient.getDiagnosis();
                 String Details = patient.getDetails();
@@ -88,7 +83,6 @@ public class PatientMedicalHistory extends AppCompatActivity implements SelectLi
         RecyclerRowAdapter recyclerRowAdapter = new RecyclerRowAdapter(this, arrayList, this);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         recyclerView.setAdapter(recyclerRowAdapter);
-        recyclerRowAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -114,8 +108,6 @@ public class PatientMedicalHistory extends AppCompatActivity implements SelectLi
         MaterialTextView prescriptionMaterialTextView = popupView.findViewById(R.id.prescriptionTextView);
         MaterialTextView documentIDMaterialTextView = popupView.findViewById(R.id.documentIDTextView);
         MaterialTextView treatmentMaterialTextView = popupView.findViewById(R.id.treatmentTextView);
-        Button buttonDelete = popupView.findViewById(R.id.buttonDelete);
-        Button buttonEdit = popupView.findViewById(R.id.buttonEdit);
 
         dateMaterialTextView.setText(patientDiagnosis.getDate());
         hospitalNameMaterialTextView.setText(patientDiagnosis.getHospitalName());
@@ -124,33 +116,14 @@ public class PatientMedicalHistory extends AppCompatActivity implements SelectLi
         prescriptionMaterialTextView.setText(patientDiagnosis.getPrescription());
         documentIDMaterialTextView.setText(patientDiagnosis.getDocumentID());
         treatmentMaterialTextView.setText(patientDiagnosis.getTreatment());
-        buttonEdit.setOnClickListener(v -> {
-            if (isAdmin.equals("Yes")) {
-                historyReference.document(DocumentID);
-                Boolean editStatus = true;
-                startActivity(new Intent(getApplicationContext(), AddDiagnosisActivity.class).putExtra("documentID",DocumentID).putExtra("date",Date).putExtra("editStatus",editStatus));
-                recyclerView.setVisibility(View.VISIBLE);
-            }
-        });
-        if (isAdmin.equals("Yes")) {
-            popupView.findViewById(R.id.adminLayout).setVisibility(View.VISIBLE);
-        } else popupView.findViewById(R.id.adminLayout).setVisibility(View.INVISIBLE);
-
-        buttonDelete.setOnClickListener(v -> {
-            if (isAdmin.equals("Yes")) {
-                historyReference.document(DocumentID)
-                        .delete()
-                        .addOnSuccessListener(aVoid -> Toast.makeText(PatientMedicalHistory.this, "Record deleted", Toast.LENGTH_SHORT).show())
-                        .addOnFailureListener(e -> Log.w(TAG, "Error deleting recorded", e));
+        // dismiss the popup window when touched
+        popupView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
                 popupWindow.dismiss();
                 recyclerView.setVisibility(View.VISIBLE);
+                return true;
             }
-        });
-        // dismiss the popup window when touched
-        popupView.setOnTouchListener((v, event) -> {
-            popupWindow.dismiss();
-            recyclerView.setVisibility(View.VISIBLE);
-            return true;
         });
     }
 }

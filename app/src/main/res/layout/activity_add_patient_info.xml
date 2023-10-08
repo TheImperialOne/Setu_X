@@ -281,6 +281,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
+                    android:layout_marginBottom="10dp"
                     android:elevation="10dp"
                     app:cardCornerRadius="15dp">
 
@@ -314,54 +315,6 @@
 
                             <com.google.android.material.textview.MaterialTextView
                                 android:id="@+id/aadhaarNumber"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="30dp"
-                                android:fontFamily="@font/nuni"
-                                android:text="----"
-                                android:textColor="@color/black"
-                                android:textSize="20sp"
-                                android:textStyle="bold" />
-                        </LinearLayout>
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:elevation="10dp"
-                    app:cardCornerRadius="15dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="7dp">
-
-                        <ImageView
-                            android:layout_width="35dp"
-                            android:layout_height="35dp"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginStart="10dp"
-                            android:src="@drawable/baseline_calendar_month_24" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <com.google.android.material.textview.MaterialTextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="10dp"
-                                android:fontFamily="@font/nuni"
-                                android:text="Bucket ID"
-                                android:textColor="@color/black"
-                                android:textSize="25sp"
-                                android:textStyle="bold" />
-
-                            <com.google.android.material.textview.MaterialTextView
-                                android:id="@+id/bucketID"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="30dp"

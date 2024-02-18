@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "255620402997",
+    "firebase_url": "https://setux-1881-default-rtdb.asia-southeast1.firebasedatabase.app",
     "project_id": "setux-1881",
     "storage_bucket": "setux-1881.appspot.com"
   },
@@ -14,11 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "255620402997-073pjalcaa6pda5bdhoc7skugs4kcicd.apps.googleusercontent.com",
+          "client_id": "255620402997-nifven8kq43e1b76dnv0h6anqr59jm1v.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.imperial.setux",
-            "certificate_hash": "8c2ef7b69558316b3e8abaf4cd9ef620a02b4193"
+            "certificate_hash": "95658b48cce035e14215c5d11923db048966b6f5"
           }
         },
         {

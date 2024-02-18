@@ -29,7 +29,7 @@ public class VerifyPatientActivity extends AppCompatActivity {
     EditText inputAadhaar, inputOTP;
     Button sendOTP, verifyButton;
     FirebaseFirestore firebaseFirestore;
-    String getHospitalName;
+    String getHospitalName, getHospitalEmail;
     String phonenumber;
     String otpid;
     String getAadhaar;
@@ -46,6 +46,7 @@ public class VerifyPatientActivity extends AppCompatActivity {
         verifyButton = (Button) findViewById(R.id.verify_button);
         firebaseFirestore = FirebaseFirestore.getInstance();
         getHospitalName = getIntent().getStringExtra("HospitalName");
+        getHospitalEmail = getIntent().getStringExtra("HospitalEmail");
         linearLayout = findViewById(R.id.otpLayout);
 
         sendOTP.setOnClickListener(view -> {
@@ -71,6 +72,7 @@ public class VerifyPatientActivity extends AppCompatActivity {
             else {
                 Intent intent = new Intent(VerifyPatientActivity.this, AddPatientInfoActivity.class);
                 intent.putExtra("hospitalName", getHospitalName);
+                intent.putExtra("hospitalEmail", getHospitalEmail);
                 intent.putExtra("aadhaar", getAadhaar);
                 startActivity(intent);
 

@@ -36,7 +36,7 @@ public class AddPatientInfoActivity extends AppCompatActivity {
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
     DocumentReference documentReference;
     CollectionReference historyReference;
-    String hospitalName;
+    String hospitalName, hospitalEmail;
     String getAadhaar;
     CardView cardView;
     private static final String TAG = "AddPatientInfoActivity";
@@ -52,6 +52,7 @@ public class AddPatientInfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_patient_info);
         hospitalName = getIntent().getStringExtra("hospitalName");
+        hospitalEmail = getIntent().getStringExtra("hospitalEmail");
         getAadhaar = getIntent().getStringExtra("aadhaar");
         documentReference = firebaseFirestore.collection("Users").document(getAadhaar);
         historyReference = documentReference.collection("Medical History");
@@ -89,7 +90,7 @@ public class AddPatientInfoActivity extends AppCompatActivity {
                 });
 
         viewHistory.setOnClickListener(view->{
-            startActivity(new Intent(getApplicationContext(), PatientMedicalHistory.class).putExtra("aadhaar",getAadhaar).putExtra("hospitalName",hospitalName));
+            startActivity(new Intent(getApplicationContext(), PatientMedicalHistory.class).putExtra("aadhaar",getAadhaar).putExtra("hospitalName",hospitalName).putExtra("hospitalEmail",hospitalEmail));
         });
         cardView.setOnClickListener(view->{
             onBackPressed();

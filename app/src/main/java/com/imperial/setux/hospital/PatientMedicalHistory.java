@@ -43,6 +43,7 @@ public class PatientMedicalHistory extends AppCompatActivity implements SelectLi
         setContentView(R.layout.activity_patient_medical_history);
         String getAadhaar = getIntent().getStringExtra("aadhaar");
         String hospitalName = getIntent().getStringExtra("hospitalName");
+        String hospitalEmail = getIntent().getStringExtra("hospitalEmail");
         String bucketID = getIntent().getStringExtra("bucketID");
         documentReference = firebaseFirestore.collection("Users").document(String.valueOf(getAadhaar));
         historyReference = documentReference.collection("Medical History");
@@ -54,7 +55,7 @@ public class PatientMedicalHistory extends AppCompatActivity implements SelectLi
             onBackPressed();
         });
         addRecord.setOnClickListener(view -> {
-            startActivity(new Intent(getApplicationContext(), AddDiagnosisActivity.class).putExtra("aadhaar", getAadhaar).putExtra("hospitalName", hospitalName).putExtra("bucketID", bucketID));
+            startActivity(new Intent(getApplicationContext(), AddDiagnosisActivity.class).putExtra("aadhaar", getAadhaar).putExtra("hospitalName", hospitalName).putExtra("hospitalEmail", hospitalEmail).putExtra("bucketID", bucketID));
         });
     }
 

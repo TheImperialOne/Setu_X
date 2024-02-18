@@ -2,6 +2,7 @@ package com.imperial.setux.patient;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,6 +33,7 @@ public class PatientLoginActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     String aadhaar;
     LinearLayout otpLayout;
+    private final String TAG = "PatientLoginActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,10 +49,12 @@ public class PatientLoginActivity extends AppCompatActivity {
         triggerOTP.setOnClickListener(view -> {
             aadhaar = Objects.requireNonNull(getAadhaar.getText()).toString().trim();
             DocumentReference documentReference = firebaseFirestore.collection("Users").document(aadhaar);
+            Log.d(TAG, aadhaar);
             documentReference.get().addOnSuccessListener(documentSnapshot -> {
                 if (documentSnapshot.exists()) {
                     String phoneNumber ="+91"+documentSnapshot.getString("Phone");
                     initiateOTP(phoneNumber);
+                    Log.d(TAG, phoneNumber);
                     otpLayout.setVisibility(View.VISIBLE);
                 } else
                     Toast.makeText(getApplicationContext(), "Phone number not found", Toast.LENGTH_LONG).show();
@@ -89,6 +93,7 @@ public class PatientLoginActivity extends AppCompatActivity {
                     @Override
                     public void onVerificationFailed(@NonNull FirebaseException e) {
                         Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        Log.d(TAG, e.toString());
                     }
                 });        // OnVerificationStateChangedCallbacks
 

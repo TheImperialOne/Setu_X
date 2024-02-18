@@ -1,55 +1,94 @@
 package com.imperial.setux.patient;
 
+import java.util.Date;
+
 public class Patient {
-    private String name;
-    private String DOB;
-    private String gender;
-    private String bloodGroup;
-    private String address;
-    private String phoneNo;
-    private String aadhaarNo;
+    private String Name;
+    private String DateOfBirth;
+    private String Gender;
+    private String BloodGroup;
+    private String Address;
+    private String Phone;
+    private String Aadhaar;
 
-    public void setName(String name) {
-        this.name = name;
+    public void setName(String Name) {
+        this.Name = Name;
     }
 
-    public void setDOB(String DOB) {
-        this.DOB = DOB;
+    public void setDateOfBirth(String DateOfBirth) {
+        this.DateOfBirth = DateOfBirth;
     }
 
-    public void setGender(String gender) {
-        this.gender = gender;
+    public void setGender(String Gender) {
+        this.Gender = Gender;
     }
 
-    public void setBloodGroup(String bloodGroup) {
-        this.bloodGroup = bloodGroup;
+    public void setBloodGroup(String BloodGroup) {
+        this.BloodGroup = BloodGroup;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setAddress(String Address) {
+        this.Address = Address;
     }
 
-    public void setAadhaarNo(String aadhaarNo) {
-        this.aadhaarNo = aadhaarNo;
+    public void setAadhaarNo(String Aadhaar) {
+        this.Aadhaar = Aadhaar;
     }
 
 
-    public void setPhoneNo(String phoneNo) {
-        this.phoneNo = phoneNo;
+    public void setPhoneNo(String Phone) {
+        this.Phone = Phone;
     }
 
     public Patient() {
 
     }
 
-    public Patient(String name, String DOB, String bloodGroup, String address, String phoneNo, String aadhaarNo, String gender) {
-        this.name = name;
-        this.DOB = DOB;
-        this.gender = gender;
-        this.bloodGroup = bloodGroup;
-        this.address = address;
-        this.phoneNo = phoneNo;
-        this.aadhaarNo = aadhaarNo;
+    public String getName() {
+        return Name;
+    }
+
+    public String getDateOfBirth() {
+        return DateOfBirth;
+    }
+
+    public String getGender() {
+        return Gender;
+    }
+
+    public String getBloodGroup() {
+        return BloodGroup;
+    }
+
+    public String getAddress() {
+        return Address;
+    }
+
+    public String getPhoneNo() {
+        return Phone;
+    }
+
+    public String getAadhaarNo() {
+        return Aadhaar;
+    }
+
+
+    public Patient(String Aadhaar, String Address, String BloodGroup, String DateOfBirth, String Gender, String Name, String Phone) {
+        this.Name = Name;
+        this.DateOfBirth = DateOfBirth;
+        this.Gender = Gender;
+        this.BloodGroup = BloodGroup;
+        this.Address = Address;
+        this.Phone = Phone;
+        this.Aadhaar = Aadhaar;
+    }
+    public Patient(String Aadhaar, String BloodGroup, String DateOfBirth, String Gender, String Name, String Phone) {
+        this.Name = Name;
+        this.DateOfBirth = DateOfBirth;
+        this.Gender = Gender;
+        this.BloodGroup = BloodGroup;
+        this.Phone = Phone;
+        this.Aadhaar = Aadhaar;
     }
 
 }

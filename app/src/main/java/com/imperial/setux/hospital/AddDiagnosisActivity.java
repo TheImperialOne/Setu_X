@@ -12,6 +12,7 @@ import androidx.cardview.widget.CardView;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.imperial.setux.R;
+import com.imperial.setux.patient.Patient;
 import com.imperial.setux.patient.PatientDashboard;
 
 import java.text.SimpleDateFormat;
@@ -88,12 +89,34 @@ public class AddDiagnosisActivity extends AppCompatActivity {
 
             documentReference.get().addOnSuccessListener(documentSnapshot -> {
                         if (documentSnapshot.exists()) {
+                            Patient patient = documentSnapshot.toObject(Patient.class);
                             Name = documentSnapshot.getString(NAME);
                             Aadhaar = documentSnapshot.getString(AADHAAR);
                             DOB = documentSnapshot.getString(DateOfBirth);
                             Phone = documentSnapshot.getString(PHONE);
                             Gender = documentSnapshot.getString(GENDER);
                             BloodGroup = documentSnapshot.getString(BLOODGROUP);
+                            Map<String, Object> patientRecord = new HashMap<>();
+                            patientRecord.put(NAME, Name);
+                            patientRecord.put(AADHAAR, Aadhaar);
+                            patientRecord.put(DateOfBirth, DOB);
+                            patientRecord.put(PHONE, Phone);
+                            patientRecord.put(GENDER, Gender);
+                            patientRecord.put(BLOODGROUP, BloodGroup);
+                            db.collection("Hospitals").document(hospitalEmail).collection("Patient Data").document(getAadhaar).set(patientRecord)
+                                    .addOnSuccessListener(aVoid -> Toast.makeText(AddDiagnosisActivity.this, "Hospital Record saved", Toast.LENGTH_SHORT).show())
+                                    .addOnFailureListener(e -> {
+                                        Toast.makeText(AddDiagnosisActivity.this, "Error!", Toast.LENGTH_SHORT).show();
+                                        Log.d(TAG, e.toString());
+                                    });
+
+                            db.collection("Hospitals").document(hospitalEmail).collection("Patient Data").document(getAadhaar).collection("Medical History").add(record).addOnSuccessListener(documentReference -> {
+                                        Toast.makeText(AddDiagnosisActivity.this, "Hospital Record saved", Toast.LENGTH_SHORT).show();
+                                        onBackPressed();
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Toast.makeText(AddDiagnosisActivity.this, "Error!", Toast.LENGTH_SHORT).show();
+                                    });
                         } else {
                             Toast.makeText(AddDiagnosisActivity.this, "Document does not exist", Toast.LENGTH_SHORT).show();
                             Log.d(TAG, "Document does not exist");
@@ -104,28 +127,7 @@ public class AddDiagnosisActivity extends AppCompatActivity {
                         Log.d(TAG, e.toString());
                     });
 
-            Map<String, Object> patientRecord = new HashMap<>();
-            patientRecord.put(NAME, Name);
-            patientRecord.put(AADHAAR, Aadhaar);
-            Log.d(TAG, "Heil Hitler: "+Aadhaar);
-            patientRecord.put(DateOfBirth, DOB);
-            patientRecord.put(PHONE, Phone);
-            patientRecord.put(GENDER, Gender);
-            patientRecord.put(BLOODGROUP, BloodGroup);
-            db.collection("Hospitals").document(hospitalEmail).collection("Patient Data").document(getAadhaar).set(patientRecord)
-                    .addOnSuccessListener(aVoid -> Toast.makeText(AddDiagnosisActivity.this, "Hospital Record saved", Toast.LENGTH_SHORT).show())
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(AddDiagnosisActivity.this, "Error!", Toast.LENGTH_SHORT).show();
-                        Log.d(TAG, e.toString());
-                    });
 
-            db.collection("Hospitals").document(hospitalEmail).collection("Patient Data").document(getAadhaar).collection("Medical History").add(record).addOnSuccessListener(documentReference -> {
-                        Toast.makeText(AddDiagnosisActivity.this, "Hospital Record saved", Toast.LENGTH_SHORT).show();
-                        onBackPressed();
-                    })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(AddDiagnosisActivity.this, "Error!", Toast.LENGTH_SHORT).show();
-                    });
         });
 
         goBack.setOnClickListener(view -> {

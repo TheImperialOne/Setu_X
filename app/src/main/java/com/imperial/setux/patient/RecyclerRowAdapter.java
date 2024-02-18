@@ -1,4 +1,4 @@
-package com.imperial.setux;
+package com.imperial.setux.patient;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.imperial.setux.patient.PatientDiagnosis;
+import com.imperial.setux.R;
 
 import java.util.ArrayList;
 

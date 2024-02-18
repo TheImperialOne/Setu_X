@@ -1,7 +1,10 @@
 package com.imperial.setux.hospital;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -16,46 +19,45 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.textview.MaterialTextView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.imperial.setux.R;
+import com.imperial.setux.patient.Patient;
+import com.imperial.setux.patient.PatientDiagnosis;
 import com.imperial.setux.patient.RecyclerRowAdapter;
 import com.imperial.setux.patient.SelectListener;
-import com.imperial.setux.patient.PatientDiagnosis;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
-public class PatientMedicalHistory extends AppCompatActivity implements SelectListener {
+public class ViewHospitalPatients extends AppCompatActivity implements SelectListener {
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-    DocumentReference documentReference;
     CollectionReference historyReference;
+    String hospitalEmail, getAadhaar;
     RecyclerView recyclerView;
     ArrayList<PatientDiagnosis> arrayList = new ArrayList<>();
-    Button addRecord;
-    private String TAG = "MedicalHistoryActivity";
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    private String TAG = "ViewHospitalPatients";
     CardView goBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_patient_medical_history);
-        String getAadhaar = getIntent().getStringExtra("aadhaar");
-        String hospitalName = getIntent().getStringExtra("hospitalName");
-        String hospitalEmail = getIntent().getStringExtra("hospitalEmail");
+        setContentView(R.layout.activity_view_hospital_patients);
+        getAadhaar = getIntent().getStringExtra("aadhaar");
+        hospitalEmail =  user.getEmail();
+        Log.d(TAG, "HospitalEmail: " + hospitalEmail);
         String bucketID = getIntent().getStringExtra("bucketID");
-        documentReference = firebaseFirestore.collection("Users").document(String.valueOf(getAadhaar));
-        historyReference = documentReference.collection("Medical History");
+        assert hospitalEmail != null;
+        historyReference = firebaseFirestore.collection("Hospitals").document(Objects.requireNonNull(user.getEmail())).collection("Patient Data").document(getAadhaar).collection("Medical History");
         recyclerView = findViewById(R.id.recycleView);
-        addRecord = findViewById(R.id.addNew);
         goBack = findViewById(R.id.back);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         goBack.setOnClickListener(view -> {
             onBackPressed();
-        });
-        addRecord.setOnClickListener(view -> {
-            startActivity(new Intent(getApplicationContext(), AddDiagnosisActivity.class).putExtra("aadhaar", getAadhaar).putExtra("hospitalName", hospitalName).putExtra("hospitalEmail", hospitalEmail).putExtra("bucketID", bucketID));
         });
     }
 
@@ -86,9 +88,10 @@ public class PatientMedicalHistory extends AppCompatActivity implements SelectLi
         recyclerView.setAdapter(recyclerRowAdapter);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onItemClicked(PatientDiagnosis patientDiagnosis, View view) {
-        LayoutInflater inflater = (LayoutInflater)
+               LayoutInflater inflater = (LayoutInflater)
                 getSystemService(LAYOUT_INFLATER_SERVICE);
         View popupView = inflater.inflate(R.layout.popup_history, null);
 
@@ -111,20 +114,18 @@ public class PatientMedicalHistory extends AppCompatActivity implements SelectLi
         MaterialTextView treatmentMaterialTextView = popupView.findViewById(R.id.treatmentTextView);
 
         dateMaterialTextView.setText(patientDiagnosis.getDate());
-        hospitalNameMaterialTextView.setText(patientDiagnosis.getHospitalName());
+        //hospitalNameMaterialTextView.setText(patientDiagnosis.getHospitalName());
+        hospitalNameMaterialTextView.setVisibility(View.GONE);
         diagnosisMaterialTextView.setText(patientDiagnosis.getDiagnosis());
         detailsMaterialTextView.setText(patientDiagnosis.getDetails());
         prescriptionMaterialTextView.setText(patientDiagnosis.getPrescription());
         documentIDMaterialTextView.setText(patientDiagnosis.getDocumentID());
         treatmentMaterialTextView.setText(patientDiagnosis.getTreatment());
         // dismiss the popup window when touched
-        popupView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                popupWindow.dismiss();
-                recyclerView.setVisibility(View.VISIBLE);
-                return true;
-            }
+        popupView.setOnTouchListener((v, event) -> {
+            popupWindow.dismiss();
+            recyclerView.setVisibility(View.VISIBLE);
+            return true;
         });
     }
 }

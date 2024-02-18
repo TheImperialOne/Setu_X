@@ -10,9 +10,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.imperial.setux.R;
+import com.imperial.setux.UserActivity;
+import com.imperial.setux.hospital.HospitalDashboardActivity;
 
 public class PatientDashboard extends AppCompatActivity {
     Button btnLogout, btnMedicalHistory;
@@ -20,6 +23,8 @@ public class PatientDashboard extends AppCompatActivity {
 //
     DocumentReference documentReference;
     MaterialTextView setDOB, setBloodGroup, setGender, setPhoneNumber, setAadhaarNumber, setAddress, setName;
+    FirebaseAuth mAuth;
+
     private static final String TAG = "PatientDashboard";
     private static final String NAME = "Name";
     private static final String AADHAAR = "Aadhaar";
@@ -45,6 +50,10 @@ public class PatientDashboard extends AppCompatActivity {
         setPhoneNumber = findViewById(R.id.phoneNumber);
         setAadhaarNumber = findViewById(R.id.aadhaarNumber);
         setAddress = findViewById(R.id.address);
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user == null) {
+            startActivity(new Intent(getApplicationContext(), UserActivity.class));
+        }
         documentReference.get().addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
                         String Name = documentSnapshot.getString(NAME);

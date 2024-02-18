@@ -19,9 +19,6 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.imperial.setux.R;
-import com.imperial.setux.RecyclerRowAdapter;
-import com.imperial.setux.SelectListener;
-import com.imperial.setux.patient.PatientDiagnosis;
 
 import java.util.ArrayList;
 

@@ -1,16 +1,16 @@
 package com.imperial.setux.hospital;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -23,17 +23,29 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.imperial.setux.R;
 import com.imperial.setux.UserActivity;
+import com.imperial.setux.patient.Patient;
 
-public class HospitalDashboardActivity extends AppCompatActivity {
+import java.util.ArrayList;
+
+public class HospitalDashboardActivity extends AppCompatActivity implements SelectListener {
     MaterialTextView hospitalName, hospitalRegn, hospitalEmail, patientCount;
     String getEmail;
     Button btnLogOut;
     FirebaseAuth mAuth;
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     Button addNewPatient;
-    CollectionReference collectionReference;
+    CollectionReference collectionReference, patientReference;
     String HospitalName, HospitalEmail, Registration;
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    ArrayList<Patient> arrayList = new ArrayList<>();
     private String TAG = "HospitalDashboardActivity";
+    private static final String NAME = "Name";
+    private static final String AADHAAR = "Aadhaar";
+    private static final String DateOfBirth = "DateOfBirth";
+    private static final String PHONE = "Phone";
+    private static final String GENDER = "Gender";
+    private static final String BLOOD = "BloodGroup";
+    RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,10 +57,12 @@ public class HospitalDashboardActivity extends AppCompatActivity {
         patientCount = findViewById(R.id.count);
         addNewPatient = findViewById(R.id.addNew);
         btnLogOut = findViewById(R.id.logout_button);
+        recyclerView = findViewById(R.id.recycleView);
+        HospitalEmail =  user.getEmail();
         getEmail = getIntent().getStringExtra("email");
         mAuth = FirebaseAuth.getInstance();
         collectionReference = FirebaseFirestore.getInstance().collection("Hospitals");
-
+        patientReference = FirebaseFirestore.getInstance().collection("Hospitals").document(HospitalEmail).collection("Patient Data");
         btnLogOut.setOnClickListener(view -> {
             mAuth.signOut();
             startActivity(new Intent(HospitalDashboardActivity.this, UserActivity.class));
@@ -66,7 +80,24 @@ public class HospitalDashboardActivity extends AppCompatActivity {
         if (user == null) {
             startActivity(new Intent(HospitalDashboardActivity.this, UserActivity.class));
         }
-
+        patientReference.addSnapshotListener(this, (queryDocumentSnapshots, e) -> {
+            if (e != null) {
+                return;
+            }
+            arrayList.clear();
+            for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                String Name = documentSnapshot.getString(NAME);
+                String Aadhaar = documentSnapshot.getString(AADHAAR);
+                String DOB = documentSnapshot.getString(DateOfBirth);
+                String Phone = documentSnapshot.getString(PHONE);
+                String Gender = documentSnapshot.getString(GENDER);
+                String BloodGroup = documentSnapshot.getString(BLOOD);
+                arrayList.add(new Patient(Aadhaar, BloodGroup,DOB, Gender, Name, Phone));
+            }
+        });
+        RecyclerRowAdapter recyclerRowAdapter = new RecyclerRowAdapter(this,arrayList,this);
+        recyclerView.setAdapter(recyclerRowAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
         collectionReference.addSnapshotListener(this, (queryDocumentSnapshots, e) -> {
             if (e != null) {
@@ -98,6 +129,7 @@ public class HospitalDashboardActivity extends AppCompatActivity {
         });
     }
 
+
     private long pressedTime;
 
     @Override
@@ -112,5 +144,11 @@ public class HospitalDashboardActivity extends AppCompatActivity {
             Toast.makeText(getBaseContext(), "Press back again to exit", Toast.LENGTH_SHORT).show();
         }
         pressedTime = System.currentTimeMillis();
+    }
+
+    @Override
+    public void onItemClicked(Patient patient, View view) {
+        Log.d(TAG, "Aadhaar: " + patient.getAadhaarNo());
+        startActivity(new Intent(getApplicationContext(), ViewHospitalPatients.class).putExtra("aadhaar",patient.getAadhaarNo()));
     }
 }

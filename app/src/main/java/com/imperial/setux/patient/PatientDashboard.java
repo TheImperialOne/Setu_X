@@ -1,7 +1,9 @@
 package com.imperial.setux.patient;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.Toast;
@@ -19,6 +21,8 @@ import com.imperial.setux.hospital.HospitalDashboardActivity;
 
 public class PatientDashboard extends AppCompatActivity {
     Button btnLogout, btnMedicalHistory;
+    SharedPreferences loginPreferences;
+    private static final String SHARED_PREF_NAME = "loginPreferences", GET_AADHAAR = "getAadhaar";
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
 //
     DocumentReference documentReference;
@@ -39,9 +43,60 @@ public class PatientDashboard extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient_dashboard);
-        getAadhaar= getIntent().getStringExtra("aadhaar");
+        loginPreferences = getSharedPreferences(SHARED_PREF_NAME, MODE_PRIVATE);
+        getAadhaar = loginPreferences.getString(GET_AADHAAR, null);
+        if(getAadhaar != null){
+            documentReference = firebaseFirestore.collection("Users").document(getAadhaar);
+            documentReference.get().addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            String Name = documentSnapshot.getString(NAME);
+                            String Aadhaar = documentSnapshot.getString(AADHAAR);
+                            String DOB = documentSnapshot.getString(DateOfBirth);
+                            String Phone = documentSnapshot.getString(PHONE);
+                            String Gender = documentSnapshot.getString(GENDER);
+                            String BloodGroup = documentSnapshot.getString(BLOOD);
+                            setName.setText(Name);
+                            setAadhaarNumber.setText(Aadhaar);
+                            setPhoneNumber.setText(Phone);
+                            setDOB.setText(DOB);
+                            setGender.setText(Gender);
+                            setBloodGroup.setText(BloodGroup);
+                        } else {
+                            Toast.makeText(PatientDashboard.this, "Document does not exist", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(PatientDashboard.this, "Error!", Toast.LENGTH_LONG).show();
+                        Log.d(TAG, e.toString());
+                    });
+        }
         btnLogout = findViewById(R.id.logout_button);
-        documentReference = firebaseFirestore.collection("Users").document(getAadhaar);
+        getAadhaar= getIntent().getStringExtra("aadhaar");
+        if(getAadhaar != null){
+            documentReference = firebaseFirestore.collection("Users").document(getAadhaar);
+            documentReference.get().addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            String Name = documentSnapshot.getString(NAME);
+                            String Aadhaar = documentSnapshot.getString(AADHAAR);
+                            String DOB = documentSnapshot.getString(DateOfBirth);
+                            String Phone = documentSnapshot.getString(PHONE);
+                            String Gender = documentSnapshot.getString(GENDER);
+                            String BloodGroup = documentSnapshot.getString(BLOOD);
+                            setName.setText(Name);
+                            setAadhaarNumber.setText(Aadhaar);
+                            setPhoneNumber.setText(Phone);
+                            setDOB.setText(DOB);
+                            setGender.setText(Gender);
+                            setBloodGroup.setText(BloodGroup);
+                        } else {
+                            Toast.makeText(PatientDashboard.this, "Document does not exist", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(PatientDashboard.this, "Error!", Toast.LENGTH_LONG).show();
+                        Log.d(TAG, e.toString());
+                    });
+        }
         btnMedicalHistory = findViewById(R.id.viewHistoryButton);
         setName = findViewById(R.id.name);
         setDOB = findViewById(R.id.DOB);
@@ -50,38 +105,18 @@ public class PatientDashboard extends AppCompatActivity {
         setPhoneNumber = findViewById(R.id.phoneNumber);
         setAadhaarNumber = findViewById(R.id.aadhaarNumber);
         setAddress = findViewById(R.id.address);
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user == null) {
-            startActivity(new Intent(getApplicationContext(), UserActivity.class));
-        }
-        documentReference.get().addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        String Name = documentSnapshot.getString(NAME);
-                        String Aadhaar = documentSnapshot.getString(AADHAAR);
-                        String DOB = documentSnapshot.getString(DateOfBirth);
-                        String Phone = documentSnapshot.getString(PHONE);
-                        String Gender = documentSnapshot.getString(GENDER);
-                        String BloodGroup = documentSnapshot.getString(BLOOD);
-                        setName.setText(Name);
-                        setAadhaarNumber.setText(Aadhaar);
-                        setPhoneNumber.setText(Phone);
-                        setDOB.setText(DOB);
-                        setGender.setText(Gender);
-                        setBloodGroup.setText(BloodGroup);
-                    } else {
-                        Toast.makeText(PatientDashboard.this, "Document does not exist", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(PatientDashboard.this, "Error!", Toast.LENGTH_LONG).show();
-                    Log.d(TAG, e.toString());
-                });
-        btnLogout.setOnClickListener(view -> {
-            FirebaseAuth.getInstance().signOut();
-            finish();
-        });
         btnMedicalHistory.setOnClickListener(view->{
             startActivity(new Intent(getApplicationContext(), MedicalHistoryActivity.class).putExtra("aadhaar",getAadhaar));
+        });
+        btnLogout.setOnClickListener(view->{
+            startActivity(new Intent(getApplicationContext(), UserActivity.class));
+            SharedPreferences.Editor editor = loginPreferences.edit();
+            editor.remove(GET_AADHAAR);
+            editor.clear();
+            editor.apply();
+            editor.commit();
+            finish();
+            Toast.makeText(getBaseContext(), "Logged out!", Toast.LENGTH_SHORT).show();
         });
     }
     private long pressedTime;

@@ -25,6 +25,9 @@
         android:theme="@style/Theme.SetuX"
         tools:targetApi="tiramisu">
         <activity
+            android:name=".DummyActivity"
+            android:exported="false" />
+        <activity
             android:name=".hospital.ViewHospitalPatients"
             android:exported="false" />
         <activity

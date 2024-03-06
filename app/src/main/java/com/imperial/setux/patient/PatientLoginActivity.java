@@ -1,12 +1,12 @@
 package com.imperial.setux.patient;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -27,6 +27,8 @@ import java.util.concurrent.TimeUnit;
 
 public class PatientLoginActivity extends AppCompatActivity {
     TextInputEditText getAadhaar, getOTP;
+    SharedPreferences loginPreferences;
+    private static final String SHARED_PREF_NAME = "loginPreferences", GET_AADHAAR = "getAadhaar";
     Button triggerOTP, login;
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
     String otpID;
@@ -45,6 +47,7 @@ public class PatientLoginActivity extends AppCompatActivity {
         login = findViewById(R.id.login_button);
         firebaseAuth = FirebaseAuth.getInstance();
         otpLayout = findViewById(R.id.otpLayout);
+        loginPreferences = getSharedPreferences(SHARED_PREF_NAME, MODE_PRIVATE);
 
         triggerOTP.setOnClickListener(view -> {
             aadhaar = Objects.requireNonNull(getAadhaar.getText()).toString().trim();
@@ -52,7 +55,7 @@ public class PatientLoginActivity extends AppCompatActivity {
             Log.d(TAG, aadhaar);
             documentReference.get().addOnSuccessListener(documentSnapshot -> {
                 if (documentSnapshot.exists()) {
-                    String phoneNumber ="+91"+documentSnapshot.getString("Phone");
+                    String phoneNumber = "+91" + documentSnapshot.getString("Phone");
                     initiateOTP(phoneNumber);
                     Log.d(TAG, phoneNumber);
                     otpLayout.setVisibility(View.VISIBLE);
@@ -99,13 +102,16 @@ public class PatientLoginActivity extends AppCompatActivity {
 
     }
 
-
     private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
         firebaseAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         Intent intent = new Intent(getApplicationContext(), PatientDashboard.class);
                         intent.putExtra("aadhaar", aadhaar);
+                        Log.d("PatientLoginActivity", aadhaar);
+                        SharedPreferences.Editor editor = loginPreferences.edit();
+                        editor.putString(GET_AADHAAR, aadhaar);
+                        editor.apply();
                         startActivity(intent);
                     } else {
                         Toast.makeText(getApplicationContext(), "Login Code Error", Toast.LENGTH_LONG).show();

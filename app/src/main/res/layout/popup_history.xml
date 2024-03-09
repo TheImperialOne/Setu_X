@@ -110,7 +110,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/nuni"
-            android:text="Prescription: "
+            android:text="Treatment: "
             android:textColor="@color/black"
             android:textStyle="bold" />
 

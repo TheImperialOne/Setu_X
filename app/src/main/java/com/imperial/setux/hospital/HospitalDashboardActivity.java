@@ -18,12 +18,16 @@ import com.google.firebase.firestore.AggregateQuery;
 import com.google.firebase.firestore.AggregateQuerySnapshot;
 import com.google.firebase.firestore.AggregateSource;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.imperial.setux.R;
 import com.imperial.setux.UserActivity;
 import com.imperial.setux.patient.Patient;
+import com.imperial.setux.patient.PatientDashboard;
+
+import org.w3c.dom.Document;
 
 import java.util.ArrayList;
 
@@ -32,13 +36,16 @@ public class HospitalDashboardActivity extends AppCompatActivity implements Sele
     String getEmail;
     Button btnLogOut;
     FirebaseAuth mAuth;
-    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    FirebaseUser user;
     Button addNewPatient;
     CollectionReference collectionReference, patientReference;
+    DocumentReference hospitalReference;
     String HospitalName, HospitalEmail, Registration;
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     ArrayList<Patient> arrayList = new ArrayList<>();
-    private String TAG = "HospitalDashboardActivity";
+    private final String TAG = "HospitalDashboardActivity";
+    private static final String HOSPITALNAME = "HospitalName";
+    private static final String REGISTRATION_NO = "Registration";
     private static final String NAME = "Name";
     private static final String AADHAAR = "Aadhaar";
     private static final String DateOfBirth = "DateOfBirth";
@@ -58,10 +65,13 @@ public class HospitalDashboardActivity extends AppCompatActivity implements Sele
         addNewPatient = findViewById(R.id.addNew);
         btnLogOut = findViewById(R.id.logout_button);
         recyclerView = findViewById(R.id.recycleView);
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
+        assert user != null;
         HospitalEmail =  user.getEmail();
         getEmail = getIntent().getStringExtra("email");
-        mAuth = FirebaseAuth.getInstance();
         collectionReference = FirebaseFirestore.getInstance().collection("Hospitals");
+        hospitalReference = FirebaseFirestore.getInstance().collection("Hospitals").document(HospitalEmail);
         patientReference = FirebaseFirestore.getInstance().collection("Hospitals").document(HospitalEmail).collection("Patient Data");
         btnLogOut.setOnClickListener(view -> {
             mAuth.signOut();
@@ -79,12 +89,42 @@ public class HospitalDashboardActivity extends AppCompatActivity implements Sele
         FirebaseUser user = mAuth.getCurrentUser();
         if (user == null) {
             startActivity(new Intent(HospitalDashboardActivity.this, UserActivity.class));
+        } else{
+            hospitalReference = FirebaseFirestore.getInstance().collection("Hospitals").document(HospitalEmail);
+            hospitalReference.get().addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            HospitalName = documentSnapshot.getString(HOSPITALNAME);
+                            Registration = documentSnapshot.getString(REGISTRATION_NO);
+                            hospitalName.setText(HospitalName);
+                            hospitalRegn.setText(Registration);
+                            hospitalEmail.setText(HospitalEmail);
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Document does not exist", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(getApplicationContext(), "Error!", Toast.LENGTH_LONG).show();
+                        Log.d(TAG, e.toString());
+                    });
+            Query query = db.collection("Hospitals").document(HospitalEmail).collection("Patient Data");
+            AggregateQuery countQuery = query.count();
+            countQuery.get(AggregateSource.SERVER).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    // Count fetched successfully
+                    AggregateQuerySnapshot snapshot = task.getResult();
+                    patientCount.setText((String.valueOf(snapshot.getCount())));
+                    Log.d(TAG, "Count: " + snapshot.getCount());
+                } else {
+                    Log.d(TAG, "Count failed: ", task.getException());
+                }
+            });
         }
         patientReference.addSnapshotListener(this, (queryDocumentSnapshots, e) -> {
             if (e != null) {
                 return;
             }
             arrayList.clear();
+            assert queryDocumentSnapshots != null;
             for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                 String Name = documentSnapshot.getString(NAME);
                 String Aadhaar = documentSnapshot.getString(AADHAAR);
@@ -99,7 +139,7 @@ public class HospitalDashboardActivity extends AppCompatActivity implements Sele
         recyclerView.setAdapter(recyclerRowAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
-        collectionReference.addSnapshotListener(this, (queryDocumentSnapshots, e) -> {
+       /* collectionReference.addSnapshotListener(this, (queryDocumentSnapshots, e) -> {
             if (e != null) {
                 return;
             }
@@ -126,7 +166,7 @@ public class HospitalDashboardActivity extends AppCompatActivity implements Sele
                     Log.d(TAG, "Count failed: ", task.getException());
                 }
             });
-        });
+        });*/
     }
 
 

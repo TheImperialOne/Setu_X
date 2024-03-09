@@ -62,8 +62,8 @@
             android:exported="false" />
         <activity
             android:name=".patient.PatientLoginActivity"
-            android:exported="false"
-            android:noHistory="true" />
+            android:exported="false"/>
+            <!--android:noHistory="true"-->
         <activity
             android:name=".UserActivity"
             android:exported="false" />

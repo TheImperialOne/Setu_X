@@ -113,6 +113,7 @@ public class PatientLoginActivity extends AppCompatActivity {
                         editor.putString(GET_AADHAAR, aadhaar);
                         editor.apply();
                         startActivity(intent);
+                        finish();
                     } else {
                         Toast.makeText(getApplicationContext(), "Login Code Error", Toast.LENGTH_LONG).show();
                     }

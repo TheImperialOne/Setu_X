@@ -15,6 +15,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.imperial.setux.hospital.HospitalDashboardActivity;
 import com.imperial.setux.patient.PatientDashboard;
 
+import java.util.Objects;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final int SPLASH_SCREEN_TIMEOUT = 3000;
@@ -30,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         new Handler().postDelayed(() -> {
+            Log.d("MainActivity","Halo");
             loginPreferences = getSharedPreferences(SHARED_PREF_NAME, MODE_PRIVATE);
             firebaseAuth = FirebaseAuth.getInstance();
             getAadhaar = loginPreferences.getString(GET_AADHAAR, null);
@@ -37,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), PatientDashboard.class);
                 startActivity(intent);
             } else if (firebaseAuth.getCurrentUser() != null) {
+                Log.d("MainActivity", Objects.requireNonNull(firebaseAuth.getCurrentUser().getEmail()));
                 Intent intent = new Intent(getApplicationContext(), HospitalDashboardActivity.class);
                 startActivity(intent);
             } else {
@@ -46,4 +50,25 @@ public class MainActivity extends AppCompatActivity {
             }
         }, SPLASH_SCREEN_TIMEOUT);
     }
+
+    /*@Override
+    protected void onStart() {
+        super.onStart();
+        Log.d("MainActivity","Halo Again");
+        loginPreferences = getSharedPreferences(SHARED_PREF_NAME, MODE_PRIVATE);
+        firebaseAuth = FirebaseAuth.getInstance();
+        getAadhaar = loginPreferences.getString(GET_AADHAAR, null);
+        if (getAadhaar != null) {
+            Intent intent = new Intent(getApplicationContext(), PatientDashboard.class);
+            startActivity(intent);
+        } else if (firebaseAuth.getCurrentUser() != null) {
+            Log.d("MainActivity", Objects.requireNonNull(firebaseAuth.getCurrentUser().getEmail()));
+            Intent intent = new Intent(getApplicationContext(), HospitalDashboardActivity.class);
+            startActivity(intent);
+        } else {
+            Intent loginIntent = new Intent(MainActivity.this, UserActivity.class);
+            startActivity(loginIntent);
+            finish();
+        }
+    }*/
 }

@@ -46,6 +46,7 @@ public class HospitalLoginActivity extends AppCompatActivity {
         });
         tvRegisterHere.setOnClickListener(view -> {
             startActivity(new Intent(HospitalLoginActivity.this, HospitalRegisterActivity.class));
+            finish();
         });
 
     }

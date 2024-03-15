@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,8 +49,10 @@ public class HospitalRegisterActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         btnRegister.setOnClickListener(view -> createUser());
-
-        tvLoginHere.setOnClickListener(view -> startActivity(new Intent(HospitalRegisterActivity.this, HospitalLoginActivity.class)));
+        tvLoginHere.setOnClickListener(v -> {
+            startActivity(new Intent(HospitalRegisterActivity.this, HospitalLoginActivity.class));
+            finish();
+        });
     }
 
     private void createUser() {

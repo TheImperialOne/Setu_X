@@ -41,8 +41,7 @@
             android:exported="false" />
         <activity
             android:name=".hospital.VerifyPatientActivity"
-            android:exported="false"
-            android:noHistory="true" />
+            android:exported="false" />
         <activity
             android:name=".hospital.HospitalRegisterActivity"
             android:exported="false" />

@@ -75,6 +75,7 @@ public class VerifyPatientActivity extends AppCompatActivity {
                 intent.putExtra("hospitalEmail", getHospitalEmail);
                 intent.putExtra("aadhaar", getAadhaar);
                 startActivity(intent);
+                finish();
 
             }
 

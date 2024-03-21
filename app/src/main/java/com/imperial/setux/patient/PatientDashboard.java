@@ -36,6 +36,7 @@ public class PatientDashboard extends AppCompatActivity {
     private static final String PHONE = "Phone";
     private static final String GENDER = "Gender";
     private static final String BLOOD = "BloodGroup";
+    private static final String ADDRESS = "Address";
     private String getAadhaar;
 
 
@@ -55,12 +56,14 @@ public class PatientDashboard extends AppCompatActivity {
                             String Phone = documentSnapshot.getString(PHONE);
                             String Gender = documentSnapshot.getString(GENDER);
                             String BloodGroup = documentSnapshot.getString(BLOOD);
+                            String Address = documentSnapshot.getString(ADDRESS);
                             setName.setText(Name);
                             setAadhaarNumber.setText(Aadhaar);
                             setPhoneNumber.setText(Phone);
                             setDOB.setText(DOB);
                             setGender.setText(Gender);
                             setBloodGroup.setText(BloodGroup);
+                            setAddress.setText(Address);
                         } else {
                             Toast.makeText(PatientDashboard.this, "Document does not exist", Toast.LENGTH_SHORT).show();
                         }
@@ -82,12 +85,14 @@ public class PatientDashboard extends AppCompatActivity {
                             String Phone = documentSnapshot.getString(PHONE);
                             String Gender = documentSnapshot.getString(GENDER);
                             String BloodGroup = documentSnapshot.getString(BLOOD);
+                            String Address = documentSnapshot.getString(ADDRESS);
                             setName.setText(Name);
                             setAadhaarNumber.setText(Aadhaar);
                             setPhoneNumber.setText(Phone);
                             setDOB.setText(DOB);
                             setGender.setText(Gender);
                             setBloodGroup.setText(BloodGroup);
+                            setAddress.setText(Address);
                         } else {
                             Toast.makeText(PatientDashboard.this, "Document does not exist", Toast.LENGTH_SHORT).show();
                         }

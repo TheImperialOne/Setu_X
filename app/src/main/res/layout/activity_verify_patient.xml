@@ -51,7 +51,7 @@
                 android:fontFamily="@font/nuni"
                 android:layout_gravity="center_horizontal"
                 android:textColor="@color/black"
-                android:text="Welcome Admin!"
+                android:text="@string/welcome_admin"
                 android:textSize="40sp"/>
 
             <com.google.android.material.textview.MaterialTextView
@@ -60,7 +60,7 @@
                 android:layout_marginTop="5dp"
                 android:fontFamily="@font/nuni"
                 android:layout_gravity="center_horizontal"
-                android:text="Verify patient"
+                android:text="@string/verify_patient"
                 android:textColor="@color/black"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -70,7 +70,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:fontFamily="@font/nuni"
-                android:text="Enter the patient's Aadhaar Number:"
+                android:text="@string/enter_the_patient_s_aadhaar_number"
                 android:textSize="20sp"
                 android:textColor="@color/black"/>
 

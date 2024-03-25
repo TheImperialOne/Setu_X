@@ -49,7 +49,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="50dp"
                 android:fontFamily="@font/nuni"
-                android:text="Create your account"
+                android:text="@string/create_your_account"
                 android:textSize="50sp"
                 android:textStyle="bold" />
 
@@ -66,7 +66,7 @@
                     android:background="@drawable/custom_edittext"
                     android:drawableStart="@drawable/baseline_local_hospital_24"
                     android:drawablePadding="8dp"
-                    android:hint="Hospital Name"
+                    android:hint="@string/hospital_name"
                     android:inputType="text"
                     android:padding="15dp" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -84,7 +84,7 @@
                     android:background="@drawable/custom_edittext"
                     android:drawableStart="@drawable/baseline_app_registration_24"
                     android:drawablePadding="8dp"
-                    android:hint="Registration no."
+                    android:hint="@string/registration_no"
                     android:inputType="number"
                     android:padding="15dp" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -199,7 +199,7 @@
                     android:background="@drawable/custom_edittext"
                     android:drawableStart="@drawable/baseline_lock_24"
                     android:drawablePadding="8dp"
-                    android:hint="Retype Password"
+                    android:hint="@string/retype_password"
                     android:inputType="textPassword"
                     android:longClickable="false"
                     android:padding="15dp" />

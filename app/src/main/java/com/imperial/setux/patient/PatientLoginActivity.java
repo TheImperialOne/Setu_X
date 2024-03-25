@@ -1,7 +1,9 @@
 package com.imperial.setux.patient;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -14,21 +16,26 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.imperial.setux.LocaleHelper;
 import com.imperial.setux.R;
 
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class PatientLoginActivity extends AppCompatActivity {
+    Context context;
+    Resources resources;
+    MaterialTextView loginToYourAccount;
     TextInputEditText getAadhaar, getOTP;
     SharedPreferences loginPreferences;
-    private static final String SHARED_PREF_NAME = "loginPreferences", GET_AADHAAR = "getAadhaar";
+    private static final String SHARED_PREF_NAME = "loginPreferences", GET_AADHAAR = "getAadhaar", GET_LANGUAGE = "getLanguage";
     Button triggerOTP, login;
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
     String otpID;
@@ -43,6 +50,7 @@ public class PatientLoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_patient_login);
         getAadhaar = findViewById(R.id.aadhaarInput);
         getOTP = findViewById(R.id.OTP);
+        loginToYourAccount = findViewById(R.id.loginToYourAccount);
         triggerOTP = findViewById(R.id.getOTP);
         login = findViewById(R.id.login_button);
         firebaseAuth = FirebaseAuth.getInstance();
@@ -106,11 +114,15 @@ public class PatientLoginActivity extends AppCompatActivity {
         firebaseAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
+                        context = LocaleHelper.setLocale(PatientLoginActivity.this, "en");
+                        resources = context.getResources();
+                        loginToYourAccount.setText(resources.getString(R.string.login_to_your_account));
                         Intent intent = new Intent(getApplicationContext(), PatientDashboard.class);
                         intent.putExtra("aadhaar", aadhaar);
                         Log.d("PatientLoginActivity", aadhaar);
                         SharedPreferences.Editor editor = loginPreferences.edit();
                         editor.putString(GET_AADHAAR, aadhaar);
+                        editor.putBoolean(GET_LANGUAGE, false);
                         editor.apply();
                         startActivity(intent);
                         finish();

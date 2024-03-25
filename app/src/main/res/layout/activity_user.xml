@@ -41,9 +41,23 @@
                     android:text="@string/app_name"
                     android:textSize="25sp"
                     android:textStyle="bold" />
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"/>
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/lang_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/hindi"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
             </LinearLayout>
 
             <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/who"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="50dp"
@@ -53,6 +67,7 @@
                 android:textStyle="bold" />
 
             <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/selectOption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
@@ -109,6 +124,7 @@
                     </com.google.android.material.card.MaterialCardView>
 
                     <TextView
+                        android:id="@+id/hospitalAdmin"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -160,6 +176,7 @@
                     </com.google.android.material.card.MaterialCardView>
 
                     <TextView
+                        android:id="@+id/patient"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"

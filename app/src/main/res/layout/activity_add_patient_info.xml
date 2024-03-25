@@ -111,7 +111,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="10dp"
                                 android:fontFamily="@font/nuni"
-                                android:text="Date of birth"
+                                android:text="@string/date_of_birth"
                                 android:textColor="@color/black"
                                 android:textSize="25sp"
                                 android:textStyle="bold" />
@@ -160,7 +160,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="10dp"
                                 android:fontFamily="@font/nuni"
-                                android:text="Blood Group"
+                                android:text="@string/blood_group"
                                 android:textColor="@color/black"
                                 android:textSize="25sp"
                                 android:textStyle="bold" />
@@ -209,7 +209,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="10dp"
                                 android:fontFamily="@font/nuni"
-                                android:text="Gender"
+                                android:text="@string/gender"
                                 android:textColor="@color/black"
                                 android:textSize="25sp"
                                 android:textStyle="bold" />
@@ -258,7 +258,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="10dp"
                                 android:fontFamily="@font/nuni"
-                                android:text="Phone number"
+                                android:text="@string/phone_number"
                                 android:textColor="@color/black"
                                 android:textSize="25sp"
                                 android:textStyle="bold" />
@@ -308,7 +308,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="10dp"
                                 android:fontFamily="@font/nuni"
-                                android:text="Aadhaar number"
+                                android:text="@string/aadhaar_number"
                                 android:textColor="@color/black"
                                 android:textSize="25sp"
                                 android:textStyle="bold" />

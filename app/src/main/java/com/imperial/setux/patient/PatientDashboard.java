@@ -1,33 +1,35 @@
 package com.imperial.setux.patient;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.imperial.setux.LocaleHelper;
 import com.imperial.setux.R;
 import com.imperial.setux.UserActivity;
-import com.imperial.setux.hospital.HospitalDashboardActivity;
 
 public class PatientDashboard extends AppCompatActivity {
+    SwitchMaterial languageSwitch;
     Button btnLogout, btnMedicalHistory;
     SharedPreferences loginPreferences;
-    private static final String SHARED_PREF_NAME = "loginPreferences", GET_AADHAAR = "getAadhaar";
+    private static final String SHARED_PREF_NAME = "loginPreferences", GET_AADHAAR = "getAadhaar", GET_LANGUAGE = "getLanguage";
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
 //
     DocumentReference documentReference;
     MaterialTextView setDOB, setBloodGroup, setGender, setPhoneNumber, setAadhaarNumber, setAddress, setName;
-    FirebaseAuth mAuth;
+    MaterialTextView dateOfBirth, bloodGroup, gender, phoneNumber, aadhaarNumber, address;
 
     private static final String TAG = "PatientDashboard";
     private static final String NAME = "Name";
@@ -38,6 +40,8 @@ public class PatientDashboard extends AppCompatActivity {
     private static final String BLOOD = "BloodGroup";
     private static final String ADDRESS = "Address";
     private String getAadhaar;
+    Context context;
+    Resources resources;
 
 
     @Override
@@ -64,6 +68,23 @@ public class PatientDashboard extends AppCompatActivity {
                             setGender.setText(Gender);
                             setBloodGroup.setText(BloodGroup);
                             setAddress.setText(Address);
+                            if(loginPreferences.getBoolean(GET_LANGUAGE, false)){
+                                languageSwitch.toggle();
+                                context = LocaleHelper.setLocale(PatientDashboard.this, "hi");
+                                resources = context.getResources();
+                                SharedPreferences.Editor editor = loginPreferences.edit();
+                                editor.putBoolean(GET_LANGUAGE, true);
+                                editor.apply();
+                                editor.commit();
+                                btnMedicalHistory.setText(resources.getString(R.string.view_medical_history));
+                                btnLogout.setText(resources.getString(R.string.logout));
+                                aadhaarNumber.setText(resources.getString(R.string.aadhaar_number));
+                                dateOfBirth.setText(resources.getString(R.string.date_of_birth));
+                                bloodGroup.setText(resources.getString(R.string.blood_group));
+                                gender.setText(resources.getString(R.string.gender));
+                                address.setText(resources.getString(R.string.address));
+                                phoneNumber.setText(resources.getString(R.string.phone_number));
+                            }
                         } else {
                             Toast.makeText(PatientDashboard.this, "Document does not exist", Toast.LENGTH_SHORT).show();
                         }
@@ -73,7 +94,14 @@ public class PatientDashboard extends AppCompatActivity {
                         Log.d(TAG, e.toString());
                     });
         }
+        dateOfBirth = findViewById(R.id.dateOfBirth);
+        bloodGroup = findViewById(R.id.bloodGroupText);
+        gender = findViewById(R.id.genderText);
+        address = findViewById(R.id.addressText);
+        aadhaarNumber = findViewById(R.id.aadhaarnumber);
+        phoneNumber = findViewById(R.id.phonenumber);
         btnLogout = findViewById(R.id.logout_button);
+        languageSwitch = findViewById(R.id.lang_switch);
         getAadhaar= getIntent().getStringExtra("aadhaar");
         if(getAadhaar != null){
             documentReference = firebaseFirestore.collection("Users").document(getAadhaar);
@@ -93,6 +121,23 @@ public class PatientDashboard extends AppCompatActivity {
                             setGender.setText(Gender);
                             setBloodGroup.setText(BloodGroup);
                             setAddress.setText(Address);
+                            if(loginPreferences.getBoolean(GET_LANGUAGE, false)){
+                                languageSwitch.toggle();
+                                context = LocaleHelper.setLocale(PatientDashboard.this, "hi");
+                                resources = context.getResources();
+                                SharedPreferences.Editor editor = loginPreferences.edit();
+                                editor.putBoolean(GET_LANGUAGE, true);
+                                editor.apply();
+                                editor.commit();
+                                btnMedicalHistory.setText(resources.getString(R.string.view_medical_history));
+                                btnLogout.setText(resources.getString(R.string.logout));
+                                aadhaarNumber.setText(resources.getString(R.string.aadhaar_number));
+                                dateOfBirth.setText(resources.getString(R.string.date_of_birth));
+                                bloodGroup.setText(resources.getString(R.string.blood_group));
+                                gender.setText(resources.getString(R.string.gender));
+                                address.setText(resources.getString(R.string.address));
+                                phoneNumber.setText(resources.getString(R.string.phone_number));
+                            }
                         } else {
                             Toast.makeText(PatientDashboard.this, "Document does not exist", Toast.LENGTH_SHORT).show();
                         }
@@ -113,7 +158,39 @@ public class PatientDashboard extends AppCompatActivity {
         btnMedicalHistory.setOnClickListener(view->{
             startActivity(new Intent(getApplicationContext(), MedicalHistoryActivity.class).putExtra("aadhaar",getAadhaar));
         });
+        languageSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if(isChecked){
+                context = LocaleHelper.setLocale(PatientDashboard.this, "hi");
+                resources = context.getResources();
+                SharedPreferences.Editor editor = loginPreferences.edit();
+                editor.putBoolean(GET_LANGUAGE, true);
+                editor.apply();
+                editor.commit();
+                btnMedicalHistory.setText(resources.getString(R.string.view_medical_history));
+                btnLogout.setText(resources.getString(R.string.logout));
+                aadhaarNumber.setText(resources.getString(R.string.aadhaar_number));
+                dateOfBirth.setText(resources.getString(R.string.date_of_birth));
+                bloodGroup.setText(resources.getString(R.string.blood_group));
+                gender.setText(resources.getString(R.string.gender));
+                address.setText(resources.getString(R.string.address));
+                phoneNumber.setText(resources.getString(R.string.phone_number));
+            }else{
+                context = LocaleHelper.setLocale(PatientDashboard.this, "en");
+                resources = context.getResources();
+                btnMedicalHistory.setText(resources.getString(R.string.view_medical_history));
+                btnLogout.setText(resources.getString(R.string.logout));
+                aadhaarNumber.setText(resources.getString(R.string.aadhaar_number));
+                dateOfBirth.setText(resources.getString(R.string.date_of_birth));
+                bloodGroup.setText(resources.getString(R.string.blood_group));
+                gender.setText(resources.getString(R.string.gender));
+                address.setText(resources.getString(R.string.address));
+                phoneNumber.setText(resources.getString(R.string.phone_number));
+            }
+        });
         btnLogout.setOnClickListener(view->{
+            context = LocaleHelper.setLocale(PatientDashboard.this, "en");
+            resources = context.getResources();
+            btnLogout.setText(resources.getString(R.string.logout));
             startActivity(new Intent(getApplicationContext(), UserActivity.class));
             SharedPreferences.Editor editor = loginPreferences.edit();
             editor.remove(GET_AADHAAR);

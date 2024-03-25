@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/nuni"
-            android:text="Date: "
+            android:text="@string/date_colon"
             android:textColor="@color/black"
             android:textStyle="bold" />
 
@@ -41,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/nuni"
-            android:text="Hospital: "
+            android:text="@string/hospital_colon"
             android:textColor="@color/black"
             android:textStyle="bold" />
 
@@ -64,7 +64,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/nuni"
-            android:text="Diagnosis: "
+            android:text="@string/diagnosis_colon"
             android:textColor="@color/black"
             android:textStyle="bold" />
 
@@ -87,7 +87,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/nuni"
-            android:text="Details: "
+            android:text="@string/details_colon"
             android:textColor="@color/black"
             android:textStyle="bold" />
 
@@ -110,7 +110,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/nuni"
-            android:text="Treatment: "
+            android:text="@string/treatment_colon"
             android:textColor="@color/black"
             android:textStyle="bold" />
 
@@ -133,7 +133,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/nuni"
-            android:text="Prescription: "
+            android:text="@string/prescription_colon"
             android:textColor="@color/black"
             android:textStyle="bold" />
 
@@ -156,7 +156,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/nuni"
-            android:text="DocumentID: "
+            android:text="@string/documentid_colon"
             android:textColor="@color/black"
             android:textStyle="bold" />
 

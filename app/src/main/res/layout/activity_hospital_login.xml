@@ -44,6 +44,7 @@
             </LinearLayout>
 
             <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/loginToYourAccount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="50dp"
@@ -107,7 +108,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/nuni"
-                    android:text="Forgot Password?"
+                    android:text="@string/forgot_password"
                     android:textColor="@color/green"
                     android:textSize="17sp"
                     android:textStyle="bold" />

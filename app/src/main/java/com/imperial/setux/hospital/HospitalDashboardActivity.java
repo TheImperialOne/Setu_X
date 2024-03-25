@@ -4,13 +4,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -22,17 +26,19 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.imperial.setux.LocaleHelper;
 import com.imperial.setux.R;
 import com.imperial.setux.UserActivity;
 import com.imperial.setux.patient.Patient;
 import com.imperial.setux.patient.PatientDashboard;
 
-import org.w3c.dom.Document;
-
 import java.util.ArrayList;
 
 public class HospitalDashboardActivity extends AppCompatActivity implements SelectListener {
-    MaterialTextView hospitalName, hospitalRegn, hospitalEmail, patientCount;
+    SharedPreferences loginPreferences;
+    private static final String SHARED_PREF_NAME = "loginPreferences", GET_EMAIL = "getEmail", GET_LANGUAGE = "getLanguage";
+    MaterialTextView setHospitalName, setHospitalRegn, setHospitalEmail, setPatientCount, hospitalName, hospitalEmail, hospitalRegn, patientsDiagnosed, welcome;
+    SwitchMaterial languageSwitch;
     String getEmail;
     Button btnLogOut;
     FirebaseAuth mAuth;
@@ -53,18 +59,27 @@ public class HospitalDashboardActivity extends AppCompatActivity implements Sele
     private static final String GENDER = "Gender";
     private static final String BLOOD = "BloodGroup";
     RecyclerView recyclerView;
+    Context context;
+    Resources resources;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hospital_dashboard);
-        hospitalName = findViewById(R.id.name);
-        hospitalRegn = findViewById(R.id.regn);
-        hospitalEmail = findViewById(R.id.email);
-        patientCount = findViewById(R.id.count);
+        loginPreferences = getSharedPreferences(SHARED_PREF_NAME, MODE_PRIVATE);
+        setHospitalName = findViewById(R.id.name);
+        setHospitalRegn = findViewById(R.id.regn);
+        setHospitalEmail = findViewById(R.id.email);
+        setPatientCount = findViewById(R.id.count);
+        welcome = findViewById(R.id.welcome);
+        hospitalName = findViewById(R.id.hospitalname);
+        hospitalRegn = findViewById(R.id.registration);
+        hospitalEmail = findViewById(R.id.emailText);
+        patientsDiagnosed = findViewById(R.id.patientDiagnosed);
         addNewPatient = findViewById(R.id.addNew);
         btnLogOut = findViewById(R.id.logout_button);
         recyclerView = findViewById(R.id.recycleView);
+        languageSwitch = findViewById(R.id.lang_switch);
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
         assert user != null;
@@ -73,8 +88,37 @@ public class HospitalDashboardActivity extends AppCompatActivity implements Sele
         collectionReference = FirebaseFirestore.getInstance().collection("Hospitals");
         hospitalReference = FirebaseFirestore.getInstance().collection("Hospitals").document(HospitalEmail);
         patientReference = FirebaseFirestore.getInstance().collection("Hospitals").document(HospitalEmail).collection("Patient Data");
+        languageSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if(isChecked){
+                SharedPreferences.Editor editor = loginPreferences.edit();
+                editor.putBoolean(GET_LANGUAGE, true);
+                editor.apply();
+                editor.commit();
+                context = LocaleHelper.setLocale(HospitalDashboardActivity.this, "hi");
+                resources = context.getResources();
+                welcome.setText(resources.getString(R.string.welcome));
+                hospitalName.setText(resources.getString(R.string.hospital_name_colon));
+                hospitalEmail.setText(resources.getString(R.string.email_colon));
+                hospitalRegn.setText(resources.getString(R.string.registration_no_colon));
+                patientsDiagnosed.setText(resources.getString(R.string.patients_diagnosed));
+                addNewPatient.setText(resources.getString(R.string.add_new_patient));
+                btnLogOut.setText(resources.getString(R.string.logout));
+            }else{
+                context = LocaleHelper.setLocale(HospitalDashboardActivity.this, "en");
+                resources = context.getResources();
+                hospitalName.setText(resources.getString(R.string.hospital_name_colon));
+                hospitalEmail.setText(resources.getString(R.string.email_colon));
+                hospitalRegn.setText(resources.getString(R.string.registration_no_colon));
+                patientsDiagnosed.setText(resources.getString(R.string.patients_diagnosed));
+                addNewPatient.setText(resources.getString(R.string.add_new_patient));
+                btnLogOut.setText(resources.getString(R.string.logout));
+            }
+        });
         btnLogOut.setOnClickListener(view -> {
             mAuth.signOut();
+            context = LocaleHelper.setLocale(HospitalDashboardActivity.this, "en");
+            resources = context.getResources();
+            btnLogOut.setText(resources.getString(R.string.logout));
             startActivity(new Intent(HospitalDashboardActivity.this, UserActivity.class));
         });
         addNewPatient.setOnClickListener(view -> {
@@ -87,6 +131,7 @@ public class HospitalDashboardActivity extends AppCompatActivity implements Sele
         Log.d(TAG, "HospitalEmail: " + HospitalEmail);
         super.onStart();
         FirebaseUser user = mAuth.getCurrentUser();
+        loginPreferences = getSharedPreferences(SHARED_PREF_NAME, MODE_PRIVATE);
         if (user == null) {
             startActivity(new Intent(HospitalDashboardActivity.this, UserActivity.class));
         } else{
@@ -95,9 +140,21 @@ public class HospitalDashboardActivity extends AppCompatActivity implements Sele
                         if (documentSnapshot.exists()) {
                             HospitalName = documentSnapshot.getString(HOSPITALNAME);
                             Registration = documentSnapshot.getString(REGISTRATION_NO);
-                            hospitalName.setText(HospitalName);
-                            hospitalRegn.setText(Registration);
-                            hospitalEmail.setText(HospitalEmail);
+                            setHospitalName.setText(HospitalName);
+                            setHospitalRegn.setText(Registration);
+                            setHospitalEmail.setText(HospitalEmail);
+                            if(loginPreferences.getBoolean(GET_LANGUAGE, true)){
+                                languageSwitch.toggle();
+                                context = LocaleHelper.setLocale(HospitalDashboardActivity.this, "hi");
+                                resources = context.getResources();
+                                welcome.setText(resources.getString(R.string.welcome));
+                                hospitalName.setText(resources.getString(R.string.hospital_name_colon));
+                                hospitalEmail.setText(resources.getString(R.string.email_colon));
+                                hospitalRegn.setText(resources.getString(R.string.registration_no_colon));
+                                patientsDiagnosed.setText(resources.getString(R.string.patients_diagnosed));
+                                addNewPatient.setText(resources.getString(R.string.add_new_patient));
+                                btnLogOut.setText(resources.getString(R.string.logout));
+                            }
                         } else {
                             Toast.makeText(getApplicationContext(), "Document does not exist", Toast.LENGTH_SHORT).show();
                         }
@@ -112,7 +169,7 @@ public class HospitalDashboardActivity extends AppCompatActivity implements Sele
                 if (task.isSuccessful()) {
                     // Count fetched successfully
                     AggregateQuerySnapshot snapshot = task.getResult();
-                    patientCount.setText((String.valueOf(snapshot.getCount())));
+                    setPatientCount.setText((String.valueOf(snapshot.getCount())));
                     Log.d(TAG, "Count: " + snapshot.getCount());
                 } else {
                     Log.d(TAG, "Count failed: ", task.getException());

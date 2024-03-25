@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
                 android:fontFamily="@font/nuni"
-                android:text="Add the diagnosis information"
+                android:text="@string/add_the_diagnosis_information"
                 android:textSize="30sp"
                 android:textStyle="bold" />
 
@@ -56,7 +56,7 @@
                     android:background="@drawable/custom_edittext"
                     android:drawableStart="@drawable/baseline_person_24"
                     android:drawablePadding="8dp"
-                    android:hint="Doctor name"
+                    android:hint="@string/doctor_name"
                     android:inputType="text"
                     android:padding="15dp" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -74,7 +74,7 @@
                     android:background="@drawable/custom_edittext"
                     android:drawableStart="@drawable/baseline_app_registration_24"
                     android:drawablePadding="8dp"
-                    android:hint="Diagnosis"
+                    android:hint="@string/diagnosis"
                     android:inputType="text"
                     android:padding="15dp" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -92,7 +92,7 @@
                     android:background="@drawable/custom_edittext"
                     android:drawableStart="@drawable/baseline_content_paste_24"
                     android:drawablePadding="8dp"
-                    android:hint="Details"
+                    android:hint="@string/details"
                     android:inputType="textEmailAddress"
                     android:padding="15dp" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -110,7 +110,7 @@
                     android:background="@drawable/custom_edittext"
                     android:drawableStart="@drawable/baseline_medical_services_24"
                     android:drawablePadding="8dp"
-                    android:hint="Treatment"
+                    android:hint="@string/treatment"
                     android:inputType="text"
                     android:longClickable="false"
                     android:padding="15dp" />
@@ -129,7 +129,7 @@
                     android:background="@drawable/custom_edittext"
                     android:drawableStart="@drawable/baseline_local_hospital_24"
                     android:drawablePadding="8dp"
-                    android:hint="Prescription"
+                    android:hint="@string/prescription"
                     android:inputType="text"
                     android:longClickable="false"
                     android:padding="15dp" />
@@ -143,7 +143,7 @@
                 android:backgroundTint="@color/green"
                 android:fontFamily="@font/nuni"
                 android:padding="20dp"
-                android:text="Done"
+                android:text="@string/done"
                 android:textAllCaps="true"
                 android:textSize="20sp"
                 android:textStyle="bold"

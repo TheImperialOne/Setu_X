@@ -42,26 +42,40 @@
                     android:text="@string/app_name"
                     android:textSize="25sp"
                     android:textStyle="bold" />
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"/>
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/lang_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/hindi"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
             </LinearLayout>
 
 
             <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/welcome"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="30dp"
                 android:layout_marginTop="20dp"
                 android:fontFamily="@font/nuni"
-                android:text="Welcome"
+                android:text="@string/welcome"
                 android:textSize="25sp"
                 android:textStyle="bold" />
             <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/hospitalname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="30dp"
                 android:layout_marginTop="10dp"
                 android:fontFamily="@font/nuni"
-                android:text="Hospital Name:"
+                android:text="@string/hospital_name_colon"
                 android:textSize="20sp"
                 android:textStyle="bold" />
             <com.google.android.material.textview.MaterialTextView
@@ -71,16 +85,17 @@
                 android:layout_marginStart="30dp"
                 android:layout_marginTop="10dp"
                 android:fontFamily="@font/nuni"
-                android:text="Name"
+                android:text="----"
                 android:textSize="25sp"
                 android:textStyle="bold" />
             <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/registration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="30dp"
                 android:layout_marginTop="10dp"
                 android:fontFamily="@font/nuni"
-                android:text="Registration no:"
+                android:text="@string/registration_no_colon"
                 android:textSize="20sp"
                 android:textStyle="bold" />
             <com.google.android.material.textview.MaterialTextView
@@ -90,16 +105,17 @@
                 android:layout_marginStart="30dp"
                 android:layout_marginTop="10dp"
                 android:fontFamily="@font/nuni"
-                android:text="Name"
+                android:text="----"
                 android:textSize="25sp"
                 android:textStyle="bold" />
             <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/emailText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="30dp"
                 android:layout_marginTop="10dp"
                 android:fontFamily="@font/nuni"
-                android:text="Email:"
+                android:text="@string/email_colon"
                 android:textSize="20sp"
                 android:textStyle="bold" />
             <com.google.android.material.textview.MaterialTextView
@@ -109,7 +125,7 @@
                 android:layout_marginStart="30dp"
                 android:layout_marginTop="10dp"
                 android:fontFamily="@font/nuni"
-                android:text="Name"
+                android:text="----"
                 android:textSize="25sp"
                 android:textStyle="bold" />
             <com.google.android.material.button.MaterialButton
@@ -123,7 +139,7 @@
                 android:backgroundTint="@color/green"
                 android:fontFamily="@font/nuni"
                 android:padding="20dp"
-                android:text="Add new Patient"
+                android:text="@string/add_new_patient"
                 android:textAllCaps="true"
                 android:textColor="@color/white"
                 android:textSize="20sp"
@@ -147,11 +163,12 @@
 
 
                     <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/patientDiagnosed"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:fontFamily="@font/nuni"
-                        android:text="Patients diagnosed"
+                        android:text="@string/patients_diagnosed"
                         android:textColor="@color/black"
                         android:textSize="25sp"
                         android:textStyle="bold" />

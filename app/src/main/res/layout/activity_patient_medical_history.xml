@@ -47,7 +47,7 @@
                     android:layout_marginEnd="30dp"
                     android:fontFamily="@font/nuni"
                     android:textColor="@color/black"
-                    android:text="Medical History"
+                    android:text="@string/medical_history"
                     android:textSize="25sp"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -55,7 +55,7 @@
                 android:id="@+id/addNew"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Add new record"
+                android:text="@string/add_new_record"
                 android:textColor="@color/white"
                 android:backgroundTint="@color/green"
                 app:cornerRadius="15dp"

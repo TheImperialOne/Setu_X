@@ -13,7 +13,6 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.imperial.setux.R;
 import com.imperial.setux.patient.Patient;
-import com.imperial.setux.patient.PatientDashboard;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

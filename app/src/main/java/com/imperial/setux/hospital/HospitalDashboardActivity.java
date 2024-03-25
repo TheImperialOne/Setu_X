@@ -106,6 +106,7 @@ public class HospitalDashboardActivity extends AppCompatActivity implements Sele
             }else{
                 context = LocaleHelper.setLocale(HospitalDashboardActivity.this, "en");
                 resources = context.getResources();
+                welcome.setText(resources.getString(R.string.welcome));
                 hospitalName.setText(resources.getString(R.string.hospital_name_colon));
                 hospitalEmail.setText(resources.getString(R.string.email_colon));
                 hospitalRegn.setText(resources.getString(R.string.registration_no_colon));
@@ -146,15 +147,17 @@ public class HospitalDashboardActivity extends AppCompatActivity implements Sele
                             if(loginPreferences.getBoolean(GET_LANGUAGE, true)){
                                 languageSwitch.toggle();
                                 context = LocaleHelper.setLocale(HospitalDashboardActivity.this, "hi");
-                                resources = context.getResources();
-                                welcome.setText(resources.getString(R.string.welcome));
-                                hospitalName.setText(resources.getString(R.string.hospital_name_colon));
-                                hospitalEmail.setText(resources.getString(R.string.email_colon));
-                                hospitalRegn.setText(resources.getString(R.string.registration_no_colon));
-                                patientsDiagnosed.setText(resources.getString(R.string.patients_diagnosed));
-                                addNewPatient.setText(resources.getString(R.string.add_new_patient));
-                                btnLogOut.setText(resources.getString(R.string.logout));
+                            }else {
+                                context = LocaleHelper.setLocale(HospitalDashboardActivity.this, "en");
                             }
+                            resources = context.getResources();
+                            welcome.setText(resources.getString(R.string.welcome));
+                            hospitalName.setText(resources.getString(R.string.hospital_name_colon));
+                            hospitalEmail.setText(resources.getString(R.string.email_colon));
+                            hospitalRegn.setText(resources.getString(R.string.registration_no_colon));
+                            patientsDiagnosed.setText(resources.getString(R.string.patients_diagnosed));
+                            addNewPatient.setText(resources.getString(R.string.add_new_patient));
+                            btnLogOut.setText(resources.getString(R.string.logout));
                         } else {
                             Toast.makeText(getApplicationContext(), "Document does not exist", Toast.LENGTH_SHORT).show();
                         }

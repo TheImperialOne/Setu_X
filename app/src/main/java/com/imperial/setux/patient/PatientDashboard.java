@@ -175,6 +175,10 @@ public class PatientDashboard extends AppCompatActivity {
                 address.setText(resources.getString(R.string.address));
                 phoneNumber.setText(resources.getString(R.string.phone_number));
             }else{
+                SharedPreferences.Editor editor = loginPreferences.edit();
+                editor.putBoolean(GET_LANGUAGE, false);
+                editor.apply();
+                editor.commit();
                 context = LocaleHelper.setLocale(PatientDashboard.this, "en");
                 resources = context.getResources();
                 btnMedicalHistory.setText(resources.getString(R.string.view_medical_history));

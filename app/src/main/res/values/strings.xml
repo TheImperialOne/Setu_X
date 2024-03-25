@@ -72,5 +72,5 @@
     <string name="treatment_colon">Treatment:</string>
     <string name="prescription_colon">Prescription:</string>
     <string name="documentid_colon">DocumentID:</string>
-    <string name="hindi">हिंदी</string>
+    <string name="hindi" translatable="false">हिंदी</string>
 </resources>

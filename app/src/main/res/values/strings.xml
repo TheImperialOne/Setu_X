@@ -73,4 +73,5 @@
     <string name="prescription_colon">Prescription:</string>
     <string name="documentid_colon">DocumentID:</string>
     <string name="hindi" translatable="false">हिंदी</string>
+    <string name="by_theimperialone" translatable="false">-By TheImperialOne</string>
 </resources>

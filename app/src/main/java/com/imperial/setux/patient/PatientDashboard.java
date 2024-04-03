@@ -4,13 +4,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.firestore.DocumentReference;
@@ -21,7 +24,7 @@ import com.imperial.setux.UserActivity;
 
 public class PatientDashboard extends AppCompatActivity {
     SwitchMaterial languageSwitch;
-    Button btnLogout, btnMedicalHistory;
+    MaterialButton btnLogout, btnMedicalHistory, btnNearbyHospitals;
     SharedPreferences loginPreferences;
     private static final String SHARED_PREF_NAME = "loginPreferences", GET_AADHAAR = "getAadhaar", GET_LANGUAGE = "getLanguage";
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
@@ -38,6 +41,7 @@ public class PatientDashboard extends AppCompatActivity {
     private static final String GENDER = "Gender";
     private static final String BLOOD = "BloodGroup";
     private static final String ADDRESS = "Address";
+    private static final String query = "geo:0,0?q=hospitals near me";
     private String getLoginAadhaar, getSPAadhaar;
     Context context;
     Resources resources;
@@ -65,6 +69,7 @@ public class PatientDashboard extends AppCompatActivity {
         setGender = findViewById(R.id.gender);
         setPhoneNumber = findViewById(R.id.phoneNumber);
         setAadhaarNumber = findViewById(R.id.aadhaarNumber);
+        btnNearbyHospitals = findViewById(R.id.nearbyHospitals);
         setAddress = findViewById(R.id.address);
         if(getLoginAadhaar != null || getSPAadhaar != null){
             if(getLoginAadhaar != null) documentReference = firebaseFirestore.collection("Users").document(getLoginAadhaar);
@@ -139,6 +144,7 @@ public class PatientDashboard extends AppCompatActivity {
         btnMedicalHistory.setOnClickListener(view->{
             startActivity(new Intent(getApplicationContext(), MedicalHistoryActivity.class).putExtra("aadhaar", getSPAadhaar));
         });
+        btnNearbyHospitals.setOnClickListener(v -> openMap());
         btnLogout.setOnClickListener(view->{
             context = LocaleHelper.setLocale(PatientDashboard.this, "en");
             resources = context.getResources();
@@ -166,5 +172,11 @@ public class PatientDashboard extends AppCompatActivity {
             Toast.makeText(getBaseContext(), "Press back again to exit", Toast.LENGTH_SHORT).show();
         }
         pressedTime = System.currentTimeMillis();
+    }
+    private void openMap() {
+        Uri uri = Uri.parse(query);
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, uri);
+        mapIntent.setPackage("com.google.android.apps.maps");
+        startActivity(mapIntent);
     }
 }

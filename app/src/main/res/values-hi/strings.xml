@@ -75,4 +75,5 @@
     <string name="upload_files">UPLOAD FILES</string>
     <string name="uploaded_file">Uploaded file:</string>
     <string name="uploaded_files_colon">Uploaded Files:</string>
+    <string name="nearby_hospitals">NEARBY HOSPITALS</string>
 </resources>

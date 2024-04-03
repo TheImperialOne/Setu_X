@@ -74,7 +74,6 @@
             android:id="@+id/viewHistoryButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="25dp"
             android:backgroundTint="@color/green"
             android:fontFamily="@font/nuni"
             android:padding="10dp"
@@ -84,6 +83,20 @@
             android:textSize="20sp"
             android:textStyle="bold"
             app:cornerRadius="15dp" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/nearbyHospitals"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="25dp"
+            android:backgroundTint="@color/green"
+            android:fontFamily="@font/nuni"
+            android:text="@string/nearby_hospitals"
+            android:textAllCaps="true"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:cornerRadius="15dp" />
+
     </LinearLayout>
 
     <LinearLayout

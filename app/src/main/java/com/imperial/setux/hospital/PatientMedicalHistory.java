@@ -1,14 +1,19 @@
 package com.imperial.setux.hospital;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -20,11 +25,15 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.imperial.setux.R;
 import com.imperial.setux.patient.RecyclerRowAdapter;
 import com.imperial.setux.patient.SelectListener;
 import com.imperial.setux.patient.PatientDiagnosis;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class PatientMedicalHistory extends AppCompatActivity implements SelectListener {
@@ -36,12 +45,14 @@ public class PatientMedicalHistory extends AppCompatActivity implements SelectLi
     Button addRecord;
     private String TAG = "MedicalHistoryActivity";
     CardView goBack;
+    String getAadhaar;
+    StorageReference storageReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient_medical_history);
-        String getAadhaar = getIntent().getStringExtra("aadhaar");
+        getAadhaar = getIntent().getStringExtra("aadhaar");
         String hospitalName = getIntent().getStringExtra("hospitalName");
         String hospitalEmail = getIntent().getStringExtra("hospitalEmail");
         String bucketID = getIntent().getStringExtra("bucketID");
@@ -109,6 +120,23 @@ public class PatientMedicalHistory extends AppCompatActivity implements SelectLi
         MaterialTextView prescriptionMaterialTextView = popupView.findViewById(R.id.prescriptionTextView);
         MaterialTextView documentIDMaterialTextView = popupView.findViewById(R.id.documentIDTextView);
         MaterialTextView treatmentMaterialTextView = popupView.findViewById(R.id.treatmentTextView);
+        ImageView imageView = popupView.findViewById(R.id.imgView);
+        LinearLayout imageGroup = popupView.findViewById(R.id.imageGroup);
+        Log.d("MedicalHistoryActivity.java", getAadhaar);
+
+        storageReference = FirebaseStorage.getInstance().getReferenceFromUrl("gs://setux-1881.appspot.com/images/"+getAadhaar+"/"+patientDiagnosis.getDocumentID());
+        /*storageReference = FirebaseStorage.getInstance().getReferenceFromUrl("gs://setux-1881.appspot.com/images/286549103713/frMiUKJLNzo7RRJh1VFe");*/
+
+        try {
+            File localFile = File.createTempFile("tempfile", ".jpeg");
+            storageReference.getFile(localFile).addOnSuccessListener(taskSnapshot -> {
+                Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+                imageView.setImageBitmap(bitmap);
+                imageGroup.setVisibility(View.VISIBLE);
+            }).addOnFailureListener(e -> Toast.makeText(getApplicationContext(), "No documents to show", Toast.LENGTH_SHORT).show());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         dateMaterialTextView.setText(patientDiagnosis.getDate());
         hospitalNameMaterialTextView.setText(patientDiagnosis.getHospitalName());

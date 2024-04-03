@@ -1,25 +1,54 @@
 package com.imperial.setux.hospital;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.imperial.setux.R;
 import com.imperial.setux.patient.Patient;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
+
+import javax.annotation.Nullable;
 
 public class AddDiagnosisActivity extends AppCompatActivity {
+    MaterialTextView uploadedFileTextView;
+    // Uri indicates, where the image will be picked from
+    private Uri filePath;
+    // request code
+    private final int PICK_IMAGE_REQUEST = 22;
+    // instance for firebase storage and StorageReference
+    FirebaseStorage storage;
+    StorageReference storageReference;
+    private ImageView imageView;
     String hospitalName, hospitalEmail;
     String getAadhaar;
     private static final String TAG = "AddDiagnosisActivity";
@@ -43,7 +72,7 @@ public class AddDiagnosisActivity extends AppCompatActivity {
     DocumentReference documentReference;
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-    private Button doneButton;
+    private MaterialButton doneButton, uploadFiles;
     String date = df.format(new Date());
     CardView goBack;
 
@@ -59,9 +88,19 @@ public class AddDiagnosisActivity extends AppCompatActivity {
         doneButton = findViewById(R.id.done_button);
         hospitalName = getIntent().getStringExtra("hospitalName");
         hospitalEmail = getIntent().getStringExtra("hospitalEmail");
+        uploadedFileTextView = findViewById(R.id.uploadedFileText);
         getAadhaar = getIntent().getStringExtra("aadhaar");
         documentReference = firebaseFirestore.collection("Users").document(getAadhaar);
         goBack = findViewById(R.id.back);
+        uploadFiles = findViewById(R.id.upload_files);
+        imageView = findViewById(R.id.imgView);
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference();
+        uploadFiles.setOnClickListener(v -> {
+            SelectImage();
+            uploadedFileTextView.setVisibility(View.VISIBLE);
+            imageView.setVisibility(View.VISIBLE);
+        });
 
         doneButton.setOnClickListener(view -> {
             String Diagnosis = editDiagnosis.getText().toString();
@@ -77,8 +116,9 @@ public class AddDiagnosisActivity extends AppCompatActivity {
             record.put(DOCTOR, Doctor);
             record.put(TREATMENT, Treatment);
             record.put(PRESCRIPTION, Prescription);
-
             db.collection("Users").document(getAadhaar).collection("Medical History").add(record).addOnSuccessListener(documentReference -> {
+                        String documentID = documentReference.getId();
+                        uploadImage(documentID, getAadhaar);
                         Toast.makeText(AddDiagnosisActivity.this, "Patient Record saved", Toast.LENGTH_SHORT).show();
                         onBackPressed();
                     })
@@ -135,4 +175,110 @@ public class AddDiagnosisActivity extends AppCompatActivity {
 
     }
 
+    private void SelectImage() {
+
+        // Defining Implicit Intent to mobile gallery
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(
+                Intent.createChooser(
+                        intent,
+                        "Select Image from here..."),
+                PICK_IMAGE_REQUEST);
+    }
+
+    // Override onActivityResult method
+    @Override
+    protected void onActivityResult(int requestCode,
+                                    int resultCode,
+                                    Intent data) {
+
+        super.onActivityResult(requestCode,
+                resultCode,
+                data);
+
+        // checking request code and result code
+        // if request code is PICK_IMAGE_REQUEST and
+        // resultCode is RESULT_OK
+        // then set image in the image view
+        if (requestCode == PICK_IMAGE_REQUEST
+                && resultCode == RESULT_OK
+                && data != null
+                && data.getData() != null) {
+
+            // Get the Uri of data
+            filePath = data.getData();
+            try {
+
+                // Setting image on image view using Bitmap
+                Bitmap bitmap = MediaStore
+                        .Images
+                        .Media
+                        .getBitmap(
+                                getContentResolver(),
+                                filePath);
+                imageView.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                // Log the exception
+                e.printStackTrace();
+            }
+        }
+    }
+
+    // UploadImage method
+    private void uploadImage(String documentID, String getAadhaar) {
+        if (filePath != null) {
+
+            // Code for showing progressDialog while uploading
+            ProgressDialog progressDialog
+                    = new ProgressDialog(this);
+            progressDialog.setTitle("Uploading...");
+            progressDialog.show();
+
+            // Defining the child of storageReference
+            StorageReference ref
+                    = storageReference
+                    .child(
+                            "images/" + getAadhaar + "/" + documentID);
+
+            // adding listeners on upload
+            // or failure of image
+            // Progress Listener for loading
+// percentage on the dialog box
+            ref.putFile(filePath)
+                    .addOnSuccessListener(
+                            taskSnapshot -> {
+                                // Image uploaded successfully
+                                // Dismiss dialog
+                                progressDialog.dismiss();
+                                Toast
+                                        .makeText(AddDiagnosisActivity.this,
+                                                "Image Uploaded!!",
+                                                Toast.LENGTH_SHORT)
+                                        .show();
+                            })
+
+                    .addOnFailureListener(e -> {
+
+                        // Error, Image not uploaded
+                        progressDialog.dismiss();
+                        Toast
+                                .makeText(AddDiagnosisActivity.this,
+                                        "Failed " + e.getMessage(),
+                                        Toast.LENGTH_SHORT)
+                                .show();
+                    })
+                    .addOnProgressListener(
+                            taskSnapshot -> {
+                                double progress
+                                        = (100.0
+                                        * taskSnapshot.getBytesTransferred()
+                                        / taskSnapshot.getTotalByteCount());
+                                progressDialog.setMessage(
+                                        "Uploaded "
+                                                + (int) progress + "%");
+                            });
+        }
+    }
 }

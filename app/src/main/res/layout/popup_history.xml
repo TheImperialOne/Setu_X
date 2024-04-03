@@ -6,7 +6,8 @@
     android:layout_height="wrap_content"
     android:layout_margin="20dp"
     android:animateLayoutChanges="true"
-    android:layout_gravity="center">
+    android:layout_gravity="center"
+    android:backgroundTint="#B4B4B4">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -168,6 +169,29 @@
             android:text="-----"
             android:textColor="@color/black"
             android:textStyle="bold" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/imageGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_marginTop="25dp"
+
+        android:orientation="vertical">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/nuni"
+            android:text="@string/uploaded_files_colon"
+            android:textColor="@color/black"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/imgView"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center"/>
     </LinearLayout>
     <LinearLayout
         android:id="@+id/adminLayout"

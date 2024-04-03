@@ -74,4 +74,7 @@
     <string name="documentid_colon">DocumentID:</string>
     <string name="hindi" translatable="false">हिंदी</string>
     <string name="by_theimperialone" translatable="false">-By TheImperialOne</string>
+    <string name="upload_files">UPLOAD FILES</string>
+    <string name="uploaded_file">Uploaded file:</string>
+    <string name="uploaded_files_colon">Uploaded Files:</string>
 </resources>

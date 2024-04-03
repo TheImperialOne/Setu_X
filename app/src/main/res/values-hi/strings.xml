@@ -72,4 +72,7 @@
     <string name="treatment_colon">इलाज:</string>
     <string name="prescription_colon">नुस्खा:</string>
     <string name="documentid_colon">DocumentID:</string>
+    <string name="upload_files">UPLOAD FILES</string>
+    <string name="uploaded_file">Uploaded file:</string>
+    <string name="uploaded_files_colon">Uploaded Files:</string>
 </resources>

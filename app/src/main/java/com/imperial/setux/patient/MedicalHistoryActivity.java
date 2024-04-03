@@ -1,25 +1,41 @@
 package com.imperial.setux.patient;
 
+import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.imperial.setux.R;
+import com.imperial.setux.hospital.AddDiagnosisActivity;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class MedicalHistoryActivity extends AppCompatActivity implements SelectListener {
@@ -30,22 +46,24 @@ public class MedicalHistoryActivity extends AppCompatActivity implements SelectL
     ArrayList<PatientDiagnosis> arrayList = new ArrayList<>();
     private String TAG = "MedicalHistoryActivity";
     CardView goBack;
+    StorageReference storageReference;
+    String getAadhaar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_medical_history);
-        String getAadhaar = getIntent().getStringExtra("aadhaar");
+        getAadhaar = getIntent().getStringExtra("aadhaar");
         documentReference = firebaseFirestore.collection("Users").document(String.valueOf(getAadhaar));
         historyReference = documentReference.collection("Medical History");
         recyclerView = findViewById(R.id.recycleView);
-
         goBack = findViewById(R.id.back);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         goBack.setOnClickListener(view -> {
             onBackPressed();
         });
     }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -73,6 +91,7 @@ public class MedicalHistoryActivity extends AppCompatActivity implements SelectL
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onItemClicked(PatientDiagnosis patientDiagnosis, View view) {
         LayoutInflater inflater = (LayoutInflater)
@@ -96,6 +115,23 @@ public class MedicalHistoryActivity extends AppCompatActivity implements SelectL
         MaterialTextView prescriptionMaterialTextView = popupView.findViewById(R.id.prescriptionTextView);
         MaterialTextView documentIDMaterialTextView = popupView.findViewById(R.id.documentIDTextView);
         MaterialTextView treatmentMaterialTextView = popupView.findViewById(R.id.treatmentTextView);
+        ImageView imageView = popupView.findViewById(R.id.imgView);
+        LinearLayout imageGroup = popupView.findViewById(R.id.imageGroup);
+        Log.d("MedicalHistoryActivity.java", getAadhaar);
+
+        storageReference = FirebaseStorage.getInstance().getReferenceFromUrl("gs://setux-1881.appspot.com/images/"+getAadhaar+"/"+patientDiagnosis.getDocumentID());
+        /*storageReference = FirebaseStorage.getInstance().getReferenceFromUrl("gs://setux-1881.appspot.com/images/286549103713/frMiUKJLNzo7RRJh1VFe");*/
+
+        try {
+            File localFile = File.createTempFile("tempfile", ".jpeg");
+            storageReference.getFile(localFile).addOnSuccessListener(taskSnapshot -> {
+                Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+                imageView.setImageBitmap(bitmap);
+                imageGroup.setVisibility(View.VISIBLE);
+            }).addOnFailureListener(e -> Toast.makeText(getApplicationContext(), "No documents to show", Toast.LENGTH_SHORT).show());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         dateMaterialTextView.setText(patientDiagnosis.getDate());
         hospitalNameMaterialTextView.setText(patientDiagnosis.getHospitalName());
@@ -104,14 +140,12 @@ public class MedicalHistoryActivity extends AppCompatActivity implements SelectL
         prescriptionMaterialTextView.setText(patientDiagnosis.getPrescription());
         documentIDMaterialTextView.setText(patientDiagnosis.getDocumentID());
         treatmentMaterialTextView.setText(patientDiagnosis.getTreatment());
+
         // dismiss the popup window when touched
-        popupView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                popupWindow.dismiss();
-                recyclerView.setVisibility(View.VISIBLE);
-                return true;
-            }
+        popupView.setOnTouchListener((v, event) -> {
+            popupWindow.dismiss();
+            recyclerView.setVisibility(View.VISIBLE);
+            return true;
         });
     }
 }

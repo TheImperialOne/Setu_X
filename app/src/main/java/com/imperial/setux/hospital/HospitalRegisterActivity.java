@@ -10,12 +10,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.imperial.setux.R;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -82,12 +92,17 @@ public class HospitalRegisterActivity extends AppCompatActivity {
                     record.put(EMAIL, email);
                     record.put(PASSWORD, password);
                     db.collection("Hospitals").document(email).set(record)
-                            .addOnSuccessListener(aVoid -> Toast.makeText(HospitalRegisterActivity.this, "Record saved", Toast.LENGTH_SHORT).show())
+                            .addOnSuccessListener(aVoid -> {
+                                Toast.makeText(HospitalRegisterActivity.this, "Record saved", Toast.LENGTH_SHORT).show();
+
+                                // 🔗 Register on blockchain via backend
+                                registerHospitalOnChain(name, email);
+                            })
                             .addOnFailureListener(e -> {
                                 Toast.makeText(HospitalRegisterActivity.this, "Error!", Toast.LENGTH_SHORT).show();
                                 Log.d(TAG, e.toString());
                             });
-                    Toast.makeText(HospitalRegisterActivity.this, "User registered successfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(HospitalRegisterActivity.this, "Hospital registered successfully", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(HospitalRegisterActivity.this, HospitalLoginActivity.class));
                 } else {
                     Toast.makeText(HospitalRegisterActivity.this, "Registration Error: " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
@@ -95,4 +110,43 @@ public class HospitalRegisterActivity extends AppCompatActivity {
             });
         }
     }
+
+    private void registerHospitalOnChain(String hospitalName, String email) {
+        OkHttpClient client = new OkHttpClient();
+
+        JSONObject postData = new JSONObject();
+        try {
+            postData.put("name", hospitalName);  // ✅ Correct key
+            postData.put("email", email);        // ✅ Required by backend
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        RequestBody body = RequestBody.create(
+                postData.toString(), MediaType.parse("application/json"));
+
+        Request request = new Request.Builder()
+                .url("http://192.168.0.102:3000/api/register/hospital")  // ✅ Add /api prefix as per route setup
+                .post(body)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.e(TAG, "Blockchain registration failed: " + e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    Log.d(TAG, "✅ Hospital registered on-chain.");
+                } else {
+                    Log.e(TAG, "❌ Failed to register hospital on-chain: " + response.body().string());
+                }
+            }
+        });
+    }
+
+
+
 }

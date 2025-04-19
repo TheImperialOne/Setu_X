@@ -1,134 +1,93 @@
 package com.imperial.setux.patient;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.util.Log;
-import android.view.View;
+import android.text.TextUtils;
 import android.widget.Button;
-import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textview.MaterialTextView;
-import com.google.firebase.FirebaseException;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.PhoneAuthCredential;
-import com.google.firebase.auth.PhoneAuthProvider;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.imperial.setux.LocaleHelper;
 import com.imperial.setux.R;
+import com.imperial.setux.patient.PatientDashboard;
 
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 public class PatientLoginActivity extends AppCompatActivity {
+    SharedPreferences loginPreferences;
+    private static final String SHARED_PREF_NAME = "loginPreferences", GET_EMAIL = "getPatientEmail", GET_LANGUAGE = "getLanguage";
+    MaterialTextView loginToYourAccount;
+    TextInputEditText etLoginEmail;
+    TextInputEditText etLoginPassword;
+    TextView tvRegisterHere;
+    Button btnLogin;
+
     Context context;
     Resources resources;
-    MaterialTextView loginToYourAccount;
-    TextInputEditText getAadhaar, getOTP;
-    SharedPreferences loginPreferences;
-    private static final String SHARED_PREF_NAME = "loginPreferences", GET_AADHAAR = "getAadhaar", GET_LANGUAGE = "getLanguage";
-    Button triggerOTP, login;
-    FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-    String otpID;
-    FirebaseAuth firebaseAuth;
-    String aadhaar;
-    LinearLayout otpLayout;
-    private final String TAG = "PatientLoginActivity";
+    FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_patient_login);
-        getAadhaar = findViewById(R.id.aadhaarInput);
-        getOTP = findViewById(R.id.OTP);
+        setContentView(R.layout.activity_hospital_login);
         loginToYourAccount = findViewById(R.id.loginToYourAccount);
-        triggerOTP = findViewById(R.id.getOTP);
-        login = findViewById(R.id.login_button);
-        firebaseAuth = FirebaseAuth.getInstance();
-        otpLayout = findViewById(R.id.otpLayout);
+        etLoginEmail = findViewById(R.id.login_email);
+        etLoginPassword = findViewById(R.id.login_password);
+        tvRegisterHere = findViewById(R.id.signUpRedirectText);
+        btnLogin = findViewById(R.id.login_button);
         loginPreferences = getSharedPreferences(SHARED_PREF_NAME, MODE_PRIVATE);
 
-        triggerOTP.setOnClickListener(view -> {
-            aadhaar = Objects.requireNonNull(getAadhaar.getText()).toString().trim();
-            DocumentReference documentReference = firebaseFirestore.collection("Users").document(aadhaar);
-            Log.d(TAG, aadhaar);
-            documentReference.get().addOnSuccessListener(documentSnapshot -> {
-                if (documentSnapshot.exists()) {
-                    String phoneNumber = "+91" + documentSnapshot.getString("Phone");
-                    initiateOTP(phoneNumber);
-                    Log.d(TAG, phoneNumber);
-                    otpLayout.setVisibility(View.VISIBLE);
-                } else
-                    Toast.makeText(getApplicationContext(), "Phone number not found", Toast.LENGTH_LONG).show();
-            }).addOnFailureListener(e -> Toast.makeText(getApplicationContext(), "Failed to fetch Phone number", Toast.LENGTH_LONG).show());
+        mAuth = FirebaseAuth.getInstance();
+
+        btnLogin.setOnClickListener(view -> {
+            loginUser();
         });
-        login.setOnClickListener(view -> {
-            if (getOTP.getText().toString().isEmpty())
-                Toast.makeText(getApplicationContext(), "Blank Field can not be processed", Toast.LENGTH_LONG).show();
-            else if (getOTP.getText().toString().length() != 6)
-                Toast.makeText(getApplicationContext(), "Invalid OTP", Toast.LENGTH_LONG).show();
-            else {
-                PhoneAuthCredential credential = PhoneAuthProvider.getCredential(otpID, getOTP.getText().toString());
-                signInWithPhoneAuthCredential(credential);
-            }
-
+        tvRegisterHere.setOnClickListener(view -> {
+            startActivity(new Intent(PatientLoginActivity.this, PatientRegisterActivity.class));
+            finish();
         });
-    }
-
-    private void initiateOTP(String phoneNumber) {
-        PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                phoneNumber,        // Phone number to verify
-                60,                 // Timeout duration
-                TimeUnit.SECONDS,   // Unit of timeout
-                this,               // Activity (for callback binding)
-                new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-                    @Override
-                    public void onCodeSent(@NonNull String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
-                        otpID = s;
-                    }
-
-                    @Override
-                    public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
-                        signInWithPhoneAuthCredential(phoneAuthCredential);
-                    }
-
-                    @Override
-                    public void onVerificationFailed(@NonNull FirebaseException e) {
-                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                        Log.d(TAG, e.toString());
-                    }
-                });        // OnVerificationStateChangedCallbacks
 
     }
 
-    private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
-        firebaseAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful()) {
-                        context = LocaleHelper.setLocale(PatientLoginActivity.this, "en");
-                        resources = context.getResources();
-                        loginToYourAccount.setText(resources.getString(R.string.login_to_your_account));
-                        Intent intent = new Intent(getApplicationContext(), PatientDashboard.class);
-                        intent.putExtra("aadhaar", aadhaar);
-                        Log.d("PatientLoginActivity", aadhaar);
-                        SharedPreferences.Editor editor = loginPreferences.edit();
-                        editor.putString(GET_AADHAAR, aadhaar);
-                        editor.putBoolean(GET_LANGUAGE, false);
-                        editor.apply();
-                        startActivity(intent);
-                        finish();
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Login Code Error", Toast.LENGTH_LONG).show();
-                    }
-                });
+    private void loginUser() {
+        String email = Objects.requireNonNull(etLoginEmail.getText()).toString();
+        String password = Objects.requireNonNull(etLoginPassword.getText()).toString();
+
+        if (TextUtils.isEmpty(email)) {
+            etLoginEmail.setError("Email cannot be empty");
+            etLoginEmail.requestFocus();
+        } else if (TextUtils.isEmpty(password)) {
+            etLoginPassword.setError("Password cannot be empty");
+            etLoginPassword.requestFocus();
+        } else {
+            mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    context = LocaleHelper.setLocale(PatientLoginActivity.this, "en");
+                    resources = context.getResources();
+                    loginToYourAccount.setText(resources.getString(R.string.login_to_your_account));
+                    SharedPreferences.Editor editor = loginPreferences.edit();
+                    editor.putString(GET_EMAIL, email);
+                    editor.putBoolean(GET_LANGUAGE, false);
+                    editor.apply();
+                    Toast.makeText(PatientLoginActivity.this, "User logged in successfully", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(PatientLoginActivity.this, PatientDashboard.class).putExtra("email",email));
+                } else {
+                    Toast.makeText(PatientLoginActivity.this, "Log in Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
+
 }

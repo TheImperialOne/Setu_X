@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    tools:context=".patient.PatientRegisterActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:orientation="vertical">
+
+            <!-- Logo and Title -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/setu_x" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:text="@string/app_name"
+                    android:textSize="25sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/nuni" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="Create Patient Account"
+                android:textSize="40sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/nuni" />
+
+            <!-- Full Name -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:hintEnabled="false">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/inputFullName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="25dp"
+                    android:background="@drawable/custom_edittext"
+                    android:drawableStart="@drawable/baseline_person_24"
+                    android:drawablePadding="8dp"
+                    android:hint="Full Name"
+                    android:inputType="textPersonName"
+                    android:padding="15dp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Phone -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:hintEnabled="false">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/inputPhone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="25dp"
+                    android:background="@drawable/custom_edittext"
+                    android:drawableStart="@drawable/baseline_phone_24"
+                    android:drawablePadding="8dp"
+                    android:hint="Phone Number"
+                    android:inputType="phone"
+                    android:padding="15dp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Date of Birth -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:hintEnabled="false">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/inputDob"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="25dp"
+                    android:focusable="false"
+                    android:background="@drawable/custom_edittext"
+                    android:drawableStart="@drawable/baseline_calendar_month_24"
+                    android:drawablePadding="8dp"
+                    android:hint="Date of Birth"
+                    android:padding="15dp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Gender Cards -->
+            <LinearLayout
+                android:id="@+id/genderSelector"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardMale"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    app:cardCornerRadius="25dp"
+                    app:cardBackgroundColor="#FFFFFF">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="20dp"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:src="@drawable/male" />
+
+                        <ImageView
+                            android:id="@+id/maleCheck"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginStart="10dp"
+                            android:src="@drawable/check"
+                            android:visibility="invisible" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardFemale"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    app:cardCornerRadius="25dp"
+                    app:cardBackgroundColor="#FFFFFF">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="20dp"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:src="@drawable/female" />
+
+                        <ImageView
+                            android:id="@+id/femaleCheck"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginStart="10dp"
+                            android:src="@drawable/check"
+                            android:visibility="invisible" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <!-- Blood Group Dropdown -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/bloodGroupLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:background="@drawable/custom_edittext"
+                app:hintEnabled="false">
+
+                <androidx.appcompat.widget.AppCompatSpinner
+                    android:id="@+id/bloodGroupDropdown"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Blood Group"
+                    android:padding="15dp"
+                    android:inputType="none" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Email -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:hintEnabled="false">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/signup_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="25dp"
+                    android:background="@drawable/custom_edittext"
+                    android:drawableStart="@drawable/baseline_email_24"
+                    android:drawablePadding="8dp"
+                    android:hint="@string/email"
+                    android:inputType="textEmailAddress"
+                    android:padding="15dp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Password -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:hintEnabled="false"
+                app:passwordToggleEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/signup_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:background="@drawable/custom_edittext"
+                    android:drawableStart="@drawable/baseline_lock_24"
+                    android:drawablePadding="8dp"
+                    android:hint="@string/password"
+                    android:inputType="textPassword"
+                    android:padding="15dp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Confirm Password -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:hintEnabled="false"
+                app:passwordToggleEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/signup_passwordConfirm"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:background="@drawable/custom_edittext"
+                    android:drawableStart="@drawable/baseline_lock_24"
+                    android:drawablePadding="8dp"
+                    android:hint="@string/retype_password"
+                    android:inputType="textPassword"
+                    android:padding="15dp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Signup Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/signup_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:backgroundTint="@color/green"
+                android:padding="20dp"
+                android:text="Register"
+                android:textColor="@color/white"
+                android:textAllCaps="true"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:cornerRadius="15dp" />
+
+            <!-- Login redirect -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Already registered?"
+                    android:textColor="#9D9693"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/nuni" />
+
+                <TextView
+                    android:id="@+id/loginRedirectText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:text="Login here"
+                    android:textColor="@color/green"
+                    android:textStyle="bold"
+                    android:textSize="17sp"
+                    android:fontFamily="@font/nuni" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

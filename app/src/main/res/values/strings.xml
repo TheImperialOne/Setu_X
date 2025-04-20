@@ -73,11 +73,12 @@
     <string name="prescription_colon">Prescription:</string>
     <string name="documentid_colon">DocumentID:</string>
     <string name="hindi" translatable="false">हिंदी</string>
+    <string name="notifications" translatable="false">Notifications</string>
     <string name="by_theimperialone" translatable="false">-By TheImperialOne</string>
-    <string name="upload_files">UPLOAD FILES</string>
-    <string name="uploaded_file">Uploaded file:</string>
-    <string name="uploaded_files_colon">Uploaded Files:</string>
-    <string name="nearby_hospitals">NEARBY HOSPITALS</string>
+    <string name="upload_files" translatable="false">UPLOAD FILES</string>
+    <string name="uploaded_file" translatable="false">Uploaded file:</string>
+    <string name="uploaded_files_colon" translatable="false">Uploaded Files:</string>
+    <string name="nearby_hospitals" translatable="false">NEARBY HOSPITALS</string>
     <string-array name="blood_groups">
         <item>A+</item>
         <item>A-</item>

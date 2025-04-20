@@ -26,6 +26,9 @@
         android:theme="@style/Theme.SetuX"
         tools:targetApi="tiramisu">
         <activity
+            android:name=".patient.NotificationActivity"
+            android:exported="false" />
+        <activity
             android:name=".patient.PatientRegisterActivity"
             android:exported="false" />
         <activity

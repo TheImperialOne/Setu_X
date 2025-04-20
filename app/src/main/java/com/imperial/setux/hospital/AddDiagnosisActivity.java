@@ -7,278 +7,290 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textview.MaterialTextView;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.imperial.setux.R;
-import com.imperial.setux.patient.Patient;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
-
-import javax.annotation.Nullable;
 
 public class AddDiagnosisActivity extends AppCompatActivity {
-    MaterialTextView uploadedFileTextView;
-    // Uri indicates, where the image will be picked from
-    private Uri filePath;
-    // request code
-    private final int PICK_IMAGE_REQUEST = 22;
-    // instance for firebase storage and StorageReference
-    FirebaseStorage storage;
-    StorageReference storageReference;
-    private ImageView imageView;
-    String hospitalName, hospitalEmail;
-    String getAadhaar;
-    private static final String TAG = "AddDiagnosisActivity";
-    private static final String DATE = "Date";
-    private static final String HOSPITALNAME = "HospitalName";
-    private static final String DETAILS = "Details";
-    private static final String DIAGNOSIS = "Diagnosis";
-    private static final String PRESCRIPTION = "Prescription";
-    private static final String DOCTOR = "Doctor";
-    private static final String TREATMENT = "Treatment";
-    private static final String NAME = "Name";
-    private static final String AADHAAR = "Aadhaar";
-    private static final String DateOfBirth = "DateOfBirth";
-    private static final String PHONE = "Phone";
-    private static final String GENDER = "Gender";
-    private static final String BLOODGROUP = "BloodGroup";
-    private String Name, Aadhaar, DOB, Phone, Gender, BloodGroup;
+    private static final String UPLOAD_URL = "http://192.168.0.102:3000/api/uploadRecord";
+
     private EditText editDiagnosis, editDetails, editPrescription, editDoctor, editTreatment;
-    FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-    //
-    DocumentReference documentReference;
-    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
-    SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
     private MaterialButton doneButton, uploadFiles;
+    private MaterialButton verifyPatientBtn;
+    private ImageView imageView;
+    private MaterialTextView uploadedFileTextView;
+    private String lastVerifiedPatientEmail; // Store last verified email
+    private CardView goBack;
+    private Bitmap bitmap;
+    private Uri filePath;
+    private final int PICK_IMAGE_REQUEST = 22;
+    private FirebaseFirestore firestore;
+
+    String hospitalName, hospitalEmail, patientEmail;
+    SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
     String date = df.format(new Date());
-    CardView goBack;
+    private static final String TAG = "AddDiagnosisActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_diagnosis);
+
+        FirebaseApp.initializeApp(this);
+
         editDiagnosis = findViewById(R.id.diagnosisInput);
         editDetails = findViewById(R.id.detailsInput);
         editPrescription = findViewById(R.id.prescriptionInput);
         editDoctor = findViewById(R.id.doctorInput);
         editTreatment = findViewById(R.id.treatmentInput);
         doneButton = findViewById(R.id.done_button);
-        hospitalName = getIntent().getStringExtra("hospitalName");
-        hospitalEmail = getIntent().getStringExtra("hospitalEmail");
-        uploadedFileTextView = findViewById(R.id.uploadedFileText);
-        getAadhaar = getIntent().getStringExtra("aadhaar");
-        documentReference = firebaseFirestore.collection("Users").document(getAadhaar);
-        goBack = findViewById(R.id.back);
         uploadFiles = findViewById(R.id.upload_files);
         imageView = findViewById(R.id.imgView);
-        storage = FirebaseStorage.getInstance();
-        storageReference = storage.getReference();
+        uploadedFileTextView = findViewById(R.id.uploadedFileText);
+        goBack = findViewById(R.id.back);
+        verifyPatientBtn = findViewById(R.id.verifyPatientBtn);
+        firestore = FirebaseFirestore.getInstance();
+
+        hospitalName = getIntent().getStringExtra("hospitalName");
+        hospitalEmail = getIntent().getStringExtra("hospitalEmail");
+        patientEmail = getIntent().getStringExtra("patientEmail");
+
         uploadFiles.setOnClickListener(v -> {
             SelectImage();
             uploadedFileTextView.setVisibility(View.VISIBLE);
             imageView.setVisibility(View.VISIBLE);
         });
 
+        verifyPatientBtn.setOnClickListener(view -> {
+
+            if (!Patterns.EMAIL_ADDRESS.matcher(patientEmail).matches()) {
+                Toast.makeText(this, "Enter a valid email address", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            checkIfPatientExists(patientEmail);
+        });
+
         doneButton.setOnClickListener(view -> {
-            String Diagnosis = editDiagnosis.getText().toString();
-            String Details = editDetails.getText().toString();
-            String Prescription = editPrescription.getText().toString();
-            String Doctor = editDoctor.getText().toString();
-            String Treatment = editTreatment.getText().toString();
-            Map<String, Object> record = new HashMap<>();
-            record.put(DATE, date);
-            record.put(HOSPITALNAME, hospitalName);
-            record.put(DIAGNOSIS, Diagnosis);
-            record.put(DETAILS, Details);
-            record.put(DOCTOR, Doctor);
-            record.put(TREATMENT, Treatment);
-            record.put(PRESCRIPTION, Prescription);
-            db.collection("Users").document(getAadhaar).collection("Medical History").add(record).addOnSuccessListener(documentReference -> {
-                        String documentID = documentReference.getId();
-                        uploadImage(documentID, getAadhaar);
-                        Toast.makeText(AddDiagnosisActivity.this, "Patient Record saved", Toast.LENGTH_SHORT).show();
-                        onBackPressed();
-                    })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(AddDiagnosisActivity.this, "Error!", Toast.LENGTH_SHORT).show();
-                    });
+            checkAccessApproval();
+            if (bitmap == null) {
+                Toast.makeText(this, "Please select an image first", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            uploadImageToFirebaseAndSendData();
+        });
 
-            documentReference.get().addOnSuccessListener(documentSnapshot -> {
-                        if (documentSnapshot.exists()) {
-                            Patient patient = documentSnapshot.toObject(Patient.class);
-                            Name = documentSnapshot.getString(NAME);
-                            Aadhaar = documentSnapshot.getString(AADHAAR);
-                            DOB = documentSnapshot.getString(DateOfBirth);
-                            Phone = documentSnapshot.getString(PHONE);
-                            Gender = documentSnapshot.getString(GENDER);
-                            BloodGroup = documentSnapshot.getString(BLOODGROUP);
-                            Map<String, Object> patientRecord = new HashMap<>();
-                            patientRecord.put(NAME, Name);
-                            patientRecord.put(AADHAAR, Aadhaar);
-                            patientRecord.put(DateOfBirth, DOB);
-                            patientRecord.put(PHONE, Phone);
-                            patientRecord.put(GENDER, Gender);
-                            patientRecord.put(BLOODGROUP, BloodGroup);
-                            db.collection("Hospitals").document(hospitalEmail).collection("Patient Data").document(getAadhaar).set(patientRecord)
-                                    .addOnSuccessListener(aVoid -> Toast.makeText(AddDiagnosisActivity.this, "Hospital Record saved", Toast.LENGTH_SHORT).show())
-                                    .addOnFailureListener(e -> {
-                                        Toast.makeText(AddDiagnosisActivity.this, "Error!", Toast.LENGTH_SHORT).show();
-                                        Log.d(TAG, e.toString());
-                                    });
+        goBack.setOnClickListener(view -> onBackPressed());
+    }
 
-                            db.collection("Hospitals").document(hospitalEmail).collection("Patient Data").document(getAadhaar).collection("Medical History").add(record).addOnSuccessListener(documentReference -> {
-                                        Toast.makeText(AddDiagnosisActivity.this, "Hospital Record saved", Toast.LENGTH_SHORT).show();
-                                        onBackPressed();
-                                    })
-                                    .addOnFailureListener(e -> {
-                                        Toast.makeText(AddDiagnosisActivity.this, "Error!", Toast.LENGTH_SHORT).show();
-                                    });
+    private void checkIfPatientExists(String email) {
+        firestore.collection("Patients")
+                .document(email)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        lastVerifiedPatientEmail = email;
+                        sendAccessRequestToPatient(email);
+                    } else {
+                        Toast.makeText(this, "Patient not found", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Error accessing database", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void sendAccessRequestToPatient(String patientEmail) {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (currentUser == null) {
+            Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String hospitalEmail = currentUser.getEmail();
+        if (hospitalEmail == null || hospitalEmail.isEmpty()) {
+            Toast.makeText(this, "Failed to get hospital email", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Map<String, Object> request = new HashMap<>();
+        request.put("hospitalEmail", hospitalEmail);
+        request.put("timestamp", System.currentTimeMillis());
+        request.put("status", "pending");
+
+        DocumentReference reqRef = firestore
+                .collection("Patients")
+                .document(patientEmail)
+                .collection("UploadRequests")
+                .document(hospitalEmail);
+
+        reqRef.set(request)
+                .addOnSuccessListener(unused -> {
+                    verifyPatientBtn.setVisibility(View.GONE);
+                    Toast.makeText(this, "Request sent to patient", Toast.LENGTH_SHORT).show();
+                    doneButton.setVisibility(View.VISIBLE);
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Failed to send request", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void checkAccessApproval() {
+        if (lastVerifiedPatientEmail == null) {
+            doneButton.setVisibility(View.GONE);
+            verifyPatientBtn.setVisibility(View.VISIBLE);
+            Toast.makeText(this, "Verify a patient first", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null || currentUser.getEmail() == null) {
+            Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String hospitalEmail = currentUser.getEmail();
+
+        firestore.collection("Patients")
+                .document(lastVerifiedPatientEmail)
+                .collection("UploadRequests")
+                .document(hospitalEmail)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String status = documentSnapshot.getString("status");
+                        if ("approved".equalsIgnoreCase(status)) {
+                            navigateToPatientDetails(lastVerifiedPatientEmail);
                         } else {
-                            Toast.makeText(AddDiagnosisActivity.this, "Document does not exist", Toast.LENGTH_SHORT).show();
-                            Log.d(TAG, "Document does not exist");
+                            Toast.makeText(this, "Access still pending", Toast.LENGTH_SHORT).show();
                         }
-                    })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(AddDiagnosisActivity.this, "Error!", Toast.LENGTH_LONG).show();
-                        Log.d(TAG, e.toString());
-                    });
-
-
-        });
-
-        goBack.setOnClickListener(view -> {
-            onBackPressed();
-        });
-
+                    } else {
+                        Toast.makeText(this, "No access request found", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Error checking access", Toast.LENGTH_SHORT).show();
+                });
     }
 
     private void SelectImage() {
-
-        // Defining Implicit Intent to mobile gallery
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(
-                Intent.createChooser(
-                        intent,
-                        "Select Image from here..."),
-                PICK_IMAGE_REQUEST);
+        startActivityForResult(Intent.createChooser(intent, "Select Image"), PICK_IMAGE_REQUEST);
     }
 
-    // Override onActivityResult method
     @Override
-    protected void onActivityResult(int requestCode,
-                                    int resultCode,
-                                    Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
-        super.onActivityResult(requestCode,
-                resultCode,
-                data);
-
-        // checking request code and result code
-        // if request code is PICK_IMAGE_REQUEST and
-        // resultCode is RESULT_OK
-        // then set image in the image view
-        if (requestCode == PICK_IMAGE_REQUEST
-                && resultCode == RESULT_OK
-                && data != null
-                && data.getData() != null) {
-
-            // Get the Uri of data
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             filePath = data.getData();
             try {
-
-                // Setting image on image view using Bitmap
-                Bitmap bitmap = MediaStore
-                        .Images
-                        .Media
-                        .getBitmap(
-                                getContentResolver(),
-                                filePath);
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
                 imageView.setImageBitmap(bitmap);
             } catch (IOException e) {
-                // Log the exception
                 e.printStackTrace();
             }
         }
     }
 
-    // UploadImage method
-    private void uploadImage(String documentID, String getAadhaar) {
-        if (filePath != null) {
+    private void uploadImageToFirebaseAndSendData() {
+        ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Uploading image...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
 
-            // Code for showing progressDialog while uploading
-            ProgressDialog progressDialog
-                    = new ProgressDialog(this);
-            progressDialog.setTitle("Uploading...");
-            progressDialog.show();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] imageData = baos.toByteArray();
 
-            // Defining the child of storageReference
-            StorageReference ref
-                    = storageReference
-                    .child(
-                            "images/" + getAadhaar + "/" + documentID);
+        String fileName = hospitalEmail + "-" + System.currentTimeMillis() + ".jpg";
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference("medical_records/" + fileName);
 
-            // adding listeners on upload
-            // or failure of image
-            // Progress Listener for loading
-// percentage on the dialog box
-            ref.putFile(filePath)
-                    .addOnSuccessListener(
-                            taskSnapshot -> {
-                                // Image uploaded successfully
-                                // Dismiss dialog
-                                progressDialog.dismiss();
-                                Toast
-                                        .makeText(AddDiagnosisActivity.this,
-                                                "Image Uploaded!!",
-                                                Toast.LENGTH_SHORT)
-                                        .show();
-                            })
+        UploadTask uploadTask = storageRef.putBytes(imageData);
+        uploadTask.addOnSuccessListener(taskSnapshot -> storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+            String fileUrl = uri.toString();
+            progressDialog.setMessage("Sending data to server...");
+            sendDataToBackend(fileUrl, progressDialog);
+        })).addOnFailureListener(e -> {
+            progressDialog.dismiss();
+            Toast.makeText(this, "Image upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        });
+    }
 
-                    .addOnFailureListener(e -> {
+    private void sendDataToBackend(String fileUrl, ProgressDialog progressDialog) {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, UPLOAD_URL,
+                response -> {
+                    progressDialog.dismiss();
+                    try {
+                        JSONObject obj = new JSONObject(response);
+                        String message = obj.has("message") ? obj.getString("message") : "Uploaded";
+                        Toast.makeText(AddDiagnosisActivity.this, message, Toast.LENGTH_LONG).show();
+                        onBackPressed();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(this, "Error parsing response", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                error -> {
+                    progressDialog.dismiss();
+                    Toast.makeText(this, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("patientEmail", patientEmail);
+                params.put("date", date);
+                params.put("doctor", editDoctor.getText().toString());
+                params.put("details", editDetails.getText().toString());
+                params.put("prescription", editPrescription.getText().toString());
+                params.put("diagnosis", editDiagnosis.getText().toString());
+                params.put("treatment", editTreatment.getText().toString());
+                params.put("hospitalName", hospitalName);
+                params.put("fileUrl", fileUrl);
+                return params;
+            }
+        };
 
-                        // Error, Image not uploaded
-                        progressDialog.dismiss();
-                        Toast
-                                .makeText(AddDiagnosisActivity.this,
-                                        "Failed " + e.getMessage(),
-                                        Toast.LENGTH_SHORT)
-                                .show();
-                    })
-                    .addOnProgressListener(
-                            taskSnapshot -> {
-                                double progress
-                                        = (100.0
-                                        * taskSnapshot.getBytesTransferred()
-                                        / taskSnapshot.getTotalByteCount());
-                                progressDialog.setMessage(
-                                        "Uploaded "
-                                                + (int) progress + "%");
-                            });
-        }
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);
+    }
+    private void navigateToPatientDetails(String patientEmail) {
+        Intent intent = new Intent(this, AddPatientInfoActivity.class);
+        intent.putExtra("patientEmail", patientEmail);
+        startActivity(intent);
     }
 }

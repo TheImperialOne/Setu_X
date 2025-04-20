@@ -19,6 +19,7 @@
             android:layout_marginEnd="20dp"
             android:orientation="vertical">
 
+            <!-- Header -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -44,6 +45,7 @@
                     android:textStyle="bold" />
             </LinearLayout>
 
+            <!-- Welcome Text -->
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -60,103 +62,71 @@
                 android:layout_marginTop="5dp"
                 android:fontFamily="@font/nuni"
                 android:layout_gravity="center_horizontal"
-                android:text="@string/verify_patient"
+                android:text="Verify Patient by Email"
                 android:textColor="@color/black"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
+            <!-- Email Prompt -->
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:fontFamily="@font/nuni"
-                android:text="@string/enter_the_patient_s_aadhaar_number"
+                android:text="Enter the patient's email address:"
                 android:textSize="20sp"
                 android:textColor="@color/black"/>
 
+            <!-- Email Input -->
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:hintEnabled="false">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/aadhaarInput"
+                    android:id="@+id/emailInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
                     android:background="@drawable/custom_edittext"
                     android:drawablePadding="8dp"
-                    android:hint="@string/aadhaar_number"
-                    android:inputType="number"
-                    android:longClickable="false"
+                    android:hint="Patient Email"
+                    android:inputType="textEmailAddress"
                     android:padding="15dp" />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- Submit Button -->
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/sendOTP"
+                android:id="@+id/verifyPatientBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:backgroundTint="@color/green"
                 android:fontFamily="@font/nuni"
                 android:padding="10dp"
-                android:text="@string/get_otp"
+                android:text="Send Access Request"
                 android:textColor="@color/white"
                 android:textAllCaps="true"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 app:cornerRadius="10dp" />
-            <LinearLayout
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/proceedToDetailsBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
-                android:id="@+id/otpLayout"
-                android:visibility="gone"
-                android:orientation="vertical">
-                <com.google.android.material.textview.MaterialTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:fontFamily="@font/nuni"
-                    android:text="@string/enter_the_otp_received"
-                    android:textSize="20sp"
-                    android:textColor="@color/black"/>
+                android:layout_marginTop="20dp"
+                android:backgroundTint="@color/green"
+                android:fontFamily="@font/nuni"
+                android:padding="10dp"
+                android:text="Proceed to Patient Details"
+                android:textColor="@color/white"
+                android:textAllCaps="true"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:cornerRadius="10dp"
+                android:visibility="gone"/>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:hintEnabled="false">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/inputOTP"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp"
-                        android:background="@drawable/custom_edittext"
-                        android:drawablePadding="8dp"
-                        android:hint="@string/enter_otp_here"
-                        android:inputType="number"
-                        android:longClickable="false"
-                        android:padding="15dp" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/verify_button"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:backgroundTint="@color/green"
-                    android:fontFamily="@font/nuni"
-                    android:padding="10dp"
-                    android:textColor="@color/white"
-                    android:text="@string/verify_and_proceed"
-                    android:textAllCaps="true"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    app:cornerRadius="10dp" />
-
-
-            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

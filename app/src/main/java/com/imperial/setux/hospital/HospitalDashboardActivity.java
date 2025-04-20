@@ -33,6 +33,7 @@ import com.imperial.setux.patient.Patient;
 import com.imperial.setux.patient.PatientDashboard;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class HospitalDashboardActivity extends AppCompatActivity implements SelectListener {
     SharedPreferences loginPreferences;
@@ -84,7 +85,7 @@ public class HospitalDashboardActivity extends AppCompatActivity implements Sele
         user = mAuth.getCurrentUser();
         assert user != null;
         HospitalEmail = user.getEmail();
-        getEmail = getIntent().getStringExtra("email");
+        fetchAndStoreWalletAddress(HospitalEmail);
         collectionReference = FirebaseFirestore.getInstance().collection("Hospitals");
         hospitalReference = FirebaseFirestore.getInstance().collection("Hospitals").document(HospitalEmail);
         patientReference = FirebaseFirestore.getInstance().collection("Hospitals").document(HospitalEmail).collection("Patient Data");
@@ -272,4 +273,32 @@ public class HospitalDashboardActivity extends AppCompatActivity implements Sele
         Log.d(TAG, "Aadhaar: " + patient.getAadhaarNo());
         startActivity(new Intent(getApplicationContext(), ViewHospitalPatients.class).putExtra("aadhaar", patient.getAadhaarNo()));
     }
+
+    public void fetchAndStoreWalletAddress(String email) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("Hospitals").document(email).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String walletAddress = documentSnapshot.getString("walletAddress");
+                        if (walletAddress != null) {
+                            // Store in SharedPreferences using 'loginPreferences'
+                            SharedPreferences preferences = getSharedPreferences("loginPreferences", MODE_PRIVATE);
+                            SharedPreferences.Editor editor = preferences.edit();
+                            editor.putString("email", email);
+                            editor.putString("walletAddress", walletAddress);
+                            editor.apply();
+
+                            Toast.makeText(this, "Wallet address saved!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(this, "Wallet address not found!", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(this, "No document found for this email!", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Failed to fetch wallet address: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
 }

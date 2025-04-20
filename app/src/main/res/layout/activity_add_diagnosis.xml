@@ -175,6 +175,21 @@
                 app:cornerRadius="15dp" />
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/verifyPatientBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:backgroundTint="@color/green"
+                android:fontFamily="@font/nuni"
+                android:padding="10dp"
+                android:text="Send Upload Request"
+                android:textColor="@color/white"
+                android:textAllCaps="true"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:cornerRadius="10dp" />
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/done_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

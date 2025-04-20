@@ -10,6 +10,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 import com.google.android.material.textview.MaterialTextView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -18,17 +20,15 @@ import com.imperial.setux.R;
 public class AddPatientInfoActivity extends AppCompatActivity {
 
     Button viewHistory;
-    MaterialTextView userName, userDOB, userBloodGroup, userPhone, userAadhaar, userGender;
+    MaterialTextView userName, userDOB, userBloodGroup, userPhone, userGender;
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
     DocumentReference documentReference;
-    CollectionReference historyReference;
     String hospitalName, hospitalEmail;
     String getAadhaar;
     CardView cardView;
     private static final String TAG = "AddPatientInfoActivity";
-    private static final String NAME = "Name";
-    private static final String AADHAAR = "Aadhaar";
-    private static final String DateOfBirth = "DateOfBirth";
+    private static final String NAME = "FullName";
+    private static final String DateOfBirth = "DOB";
     private static final String PHONE = "Phone";
     private static final String GENDER = "Gender";
     private static final String BLOOD = "BloodGroup";
@@ -38,23 +38,30 @@ public class AddPatientInfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_patient_info);
         hospitalName = getIntent().getStringExtra("hospitalName");
-        hospitalEmail = getIntent().getStringExtra("hospitalEmail");
-        getAadhaar = getIntent().getStringExtra("aadhaar");
-        documentReference = firebaseFirestore.collection("Users").document(getAadhaar);
-        historyReference = documentReference.collection("Medical History");
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        hospitalEmail = currentUser.getEmail();
+        String patientEmail = getIntent().getStringExtra("patientEmail");
+        if (patientEmail == null || patientEmail.isEmpty()) {
+            Toast.makeText(this, "No patient email provided", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+        documentReference = firebaseFirestore.collection("Patients").document(patientEmail);
         userName = findViewById(R.id.userName);
         userDOB = findViewById(R.id.DOB);
         userGender = findViewById(R.id.gender);
         userBloodGroup = findViewById(R.id.bloodGroup);
         userPhone = findViewById(R.id.phoneNumber);
-        userAadhaar = findViewById(R.id.aadhaarNumber);
         viewHistory = findViewById(R.id.viewHistoryButton);
         cardView = findViewById(R.id.back);
         documentReference.get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
                         String Name = documentSnapshot.getString(NAME);
-                        String Aadhaar = documentSnapshot.getString(AADHAAR);
                         String DOB = documentSnapshot.getString(DateOfBirth);
                         String Phone = documentSnapshot.getString(PHONE);
                         String Gender = documentSnapshot.getString(GENDER);
@@ -64,7 +71,6 @@ public class AddPatientInfoActivity extends AppCompatActivity {
                         userDOB.setText(DOB);
                         userBloodGroup.setText(BloodGroup);
                         userGender.setText(Gender);
-                        userAadhaar.setText(Aadhaar);
 
                     } else {
                         Toast.makeText(AddPatientInfoActivity.this, "Document does not exist", Toast.LENGTH_SHORT).show();
@@ -76,7 +82,7 @@ public class AddPatientInfoActivity extends AppCompatActivity {
                 });
 
         viewHistory.setOnClickListener(view->{
-            startActivity(new Intent(getApplicationContext(), PatientMedicalHistory.class).putExtra("aadhaar",getAadhaar).putExtra("hospitalName",hospitalName).putExtra("hospitalEmail",hospitalEmail));
+            startActivity(new Intent(getApplicationContext(), PatientMedicalHistory.class).putExtra("hospitalName",hospitalName).putExtra("hospitalEmail",hospitalEmail));
         });
         cardView.setOnClickListener(view->{
             onBackPressed();

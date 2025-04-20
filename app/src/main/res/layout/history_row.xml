@@ -1,39 +1,51 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:background="@android:color/white"
+    android:elevation="4dp"
+    android:padding="12dp">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardViewRoot"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="7dp"
-        app:cardUseCompatPadding="true">
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/row"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/tvDate"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="vertical"
-            android:padding="11dp">
+            android:text="Date: --" />
 
-            <TextView
-                android:id="@+id/date"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="24sp" />
+        <TextView
+            android:id="@+id/tvDoctor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Doctor: --" />
 
-            <TextView
-                android:id="@+id/hospital_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="22sp" />
+        <TextView
+            android:id="@+id/tvHospital"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hospital: --" />
 
-        </LinearLayout>
+        <TextView
+            android:id="@+id/tvDiagnosis"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Diagnosis: --" />
 
-    </androidx.cardview.widget.CardView>
+        <TextView
+            android:id="@+id/tvTreatment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Treatment: --" />
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/tvPrescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="View Prescription"
+            android:textColor="#007BFF" />
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

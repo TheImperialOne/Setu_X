@@ -23,8 +23,6 @@ public class AddPatientInfoActivity extends AppCompatActivity {
     MaterialTextView userName, userDOB, userBloodGroup, userPhone, userGender;
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
     DocumentReference documentReference;
-    String hospitalName, hospitalEmail;
-    String getAadhaar;
     CardView cardView;
     private static final String TAG = "AddPatientInfoActivity";
     private static final String NAME = "FullName";
@@ -37,13 +35,11 @@ public class AddPatientInfoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_patient_info);
-        hospitalName = getIntent().getStringExtra("hospitalName");
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser == null) {
             Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show();
             return;
         }
-        hospitalEmail = currentUser.getEmail();
         String patientEmail = getIntent().getStringExtra("patientEmail");
         if (patientEmail == null || patientEmail.isEmpty()) {
             Toast.makeText(this, "No patient email provided", Toast.LENGTH_SHORT).show();
@@ -82,7 +78,7 @@ public class AddPatientInfoActivity extends AppCompatActivity {
                 });
 
         viewHistory.setOnClickListener(view->{
-            startActivity(new Intent(getApplicationContext(), PatientMedicalHistory.class).putExtra("hospitalName",hospitalName).putExtra("hospitalEmail",hospitalEmail));
+            startActivity(new Intent(getApplicationContext(), PatientMedicalHistory.class).putExtra("patientEmail",patientEmail));
         });
         cardView.setOnClickListener(view->{
             onBackPressed();

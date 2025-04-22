@@ -126,7 +126,7 @@ public class HospitalRegisterActivity extends AppCompatActivity {
                 postData.toString(), MediaType.parse("application/json"));
 
         Request request = new Request.Builder()
-                .url("http://192.168.0.102:3000/api/register/hospital")  // ✅ Add /api prefix as per route setup
+                .url("http://192.168.251.206:3000/api/register/hospital")  // ✅ Add /api prefix as per route setup
                 .post(body)
                 .build();
 

@@ -26,7 +26,7 @@ public class VerifyPatientActivity extends AppCompatActivity {
     private TextInputEditText emailInput;
     private MaterialButton verifyPatientBtn;
     private MaterialButton proceedToDetailsBtn;
-    private String lastVerifiedPatientEmail; // Store last verified email
+    private String lastVerifiedPatientEmail, hospitalEmail, hospitalName; // Store last verified email
 
     private FirebaseFirestore firestore;
 
@@ -34,6 +34,14 @@ public class VerifyPatientActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verify_patient);
+
+        hospitalName = getIntent().getStringExtra("hospitalName");
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        hospitalEmail = currentUser.getEmail();
 
         emailInput = findViewById(R.id.emailInput);
         verifyPatientBtn = findViewById(R.id.verifyPatientBtn);
@@ -149,6 +157,8 @@ public class VerifyPatientActivity extends AppCompatActivity {
 
     private void navigateToPatientDetails(String patientEmail) {
         Intent intent = new Intent(this, AddPatientInfoActivity.class);
+        intent.putExtra("hospitalName", hospitalName);
+        intent.putExtra("hospitalEmail", hospitalEmail);
         intent.putExtra("patientEmail", patientEmail);
         startActivity(intent);
     }

@@ -85,7 +85,7 @@ public class HospitalDashboardActivity extends AppCompatActivity implements Sele
         user = mAuth.getCurrentUser();
         assert user != null;
         HospitalEmail = user.getEmail();
-        fetchAndStoreWalletAddress(HospitalEmail);
+        fetchAndStoreWalletAddress(HospitalEmail, HospitalName);
         collectionReference = FirebaseFirestore.getInstance().collection("Hospitals");
         hospitalReference = FirebaseFirestore.getInstance().collection("Hospitals").document(HospitalEmail);
         patientReference = FirebaseFirestore.getInstance().collection("Hospitals").document(HospitalEmail).collection("Patient Data");
@@ -217,9 +217,6 @@ public class HospitalDashboardActivity extends AppCompatActivity implements Sele
                 arrayList.add(new Patient(Aadhaar, BloodGroup, DOB, Gender, Name, Phone));
             }
         });
-        RecyclerRowAdapter recyclerRowAdapter = new RecyclerRowAdapter(this, arrayList, this);
-        recyclerView.setAdapter(recyclerRowAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
        /* collectionReference.addSnapshotListener(this, (queryDocumentSnapshots, e) -> {
             if (e != null) {
@@ -274,7 +271,7 @@ public class HospitalDashboardActivity extends AppCompatActivity implements Sele
         startActivity(new Intent(getApplicationContext(), ViewHospitalPatients.class).putExtra("aadhaar", patient.getAadhaarNo()));
     }
 
-    public void fetchAndStoreWalletAddress(String email) {
+    public void fetchAndStoreWalletAddress(String email, String hospitalName) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("Hospitals").document(email).get()
                 .addOnSuccessListener(documentSnapshot -> {
@@ -284,7 +281,8 @@ public class HospitalDashboardActivity extends AppCompatActivity implements Sele
                             // Store in SharedPreferences using 'loginPreferences'
                             SharedPreferences preferences = getSharedPreferences("loginPreferences", MODE_PRIVATE);
                             SharedPreferences.Editor editor = preferences.edit();
-                            editor.putString("email", email);
+                            editor.putString("hospitalEmail", email);
+                            editor.putString("hospitalName", hospitalName);
                             editor.putString("walletAddress", walletAddress);
                             editor.apply();
 

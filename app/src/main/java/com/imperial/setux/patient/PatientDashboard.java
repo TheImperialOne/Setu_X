@@ -47,7 +47,7 @@ public class PatientDashboard extends AppCompatActivity {
     // Constants
     private static final String TAG = "PatientDashboard";
     private static final String NAME = "Name";
-    private static final String DateOfBirth = "DateOfBirth";
+    private static final String DateOfBirth = "DOB";
     private static final String PHONE = "Phone";
     private static final String GENDER = "Gender";
     private static final String BLOOD = "BloodGroup";
@@ -183,7 +183,7 @@ public class PatientDashboard extends AppCompatActivity {
             FirebaseUser currentUser = mAuth.getCurrentUser();
             if (currentUser != null) {
                 startActivity(new Intent(this, MedicalHistoryActivity.class)
-                        .putExtra("userEmail", currentUser.getEmail()));
+                        .putExtra("patientEmail", currentUser.getEmail()));
             }
         });
 

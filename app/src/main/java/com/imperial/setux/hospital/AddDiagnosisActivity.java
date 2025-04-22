@@ -2,6 +2,7 @@ package com.imperial.setux.hospital;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -43,7 +44,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AddDiagnosisActivity extends AppCompatActivity {
-    private static final String UPLOAD_URL = "http://192.168.0.102:3000/api/uploadRecord";
+    private static final String UPLOAD_URL = "http://192.168.251.206:3000/api/uploadRecord";
 
     private EditText editDiagnosis, editDetails, editPrescription, editDoctor, editTreatment;
     private MaterialButton doneButton, uploadFiles;
@@ -57,7 +58,7 @@ public class AddDiagnosisActivity extends AppCompatActivity {
     private final int PICK_IMAGE_REQUEST = 22;
     private FirebaseFirestore firestore;
 
-    String hospitalName, hospitalEmail, patientEmail;
+    private String hospitalName, hospitalEmail, patientEmail;
     SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
     String date = df.format(new Date());
     private static final String TAG = "AddDiagnosisActivity";
@@ -81,10 +82,16 @@ public class AddDiagnosisActivity extends AppCompatActivity {
         goBack = findViewById(R.id.back);
         verifyPatientBtn = findViewById(R.id.verifyPatientBtn);
         firestore = FirebaseFirestore.getInstance();
-
-        hospitalName = getIntent().getStringExtra("hospitalName");
-        hospitalEmail = getIntent().getStringExtra("hospitalEmail");
+        SharedPreferences preferences = getSharedPreferences("loginPreferences", MODE_PRIVATE);
+        hospitalName = preferences.getString("hospitalName", ""); // "" is the default if not found
+        hospitalEmail = preferences.getString("hospitalEmail", "");
         patientEmail = getIntent().getStringExtra("patientEmail");
+        if (patientEmail == null || patientEmail.isEmpty()) {
+            Toast.makeText(this, "No patient email provided", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+        else Toast.makeText(this, patientEmail, Toast.LENGTH_SHORT).show();
 
         uploadFiles.setOnClickListener(v -> {
             SelectImage();
@@ -189,15 +196,17 @@ public class AddDiagnosisActivity extends AppCompatActivity {
                 .document(hospitalEmail)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        String status = documentSnapshot.getString("status");
-                        if ("approved".equalsIgnoreCase(status)) {
-                            navigateToPatientDetails(lastVerifiedPatientEmail);
-                        } else {
-                            Toast.makeText(this, "Access still pending", Toast.LENGTH_SHORT).show();
+                    if (documentSnapshot.exists() &&
+                            "approved".equalsIgnoreCase(documentSnapshot.getString("status"))) {
+
+                        if (bitmap == null) {
+                            Toast.makeText(this, "Please select an image first", Toast.LENGTH_SHORT).show();
+                            return;
                         }
+                        uploadImageToFirebaseAndSendData();
+
                     } else {
-                        Toast.makeText(this, "No access request found", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Access still pending", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(e -> {
@@ -272,7 +281,7 @@ public class AddDiagnosisActivity extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put("patientEmail", patientEmail);
+                params.put("email", patientEmail);
                 params.put("date", date);
                 params.put("doctor", editDoctor.getText().toString());
                 params.put("details", editDetails.getText().toString());
@@ -280,17 +289,17 @@ public class AddDiagnosisActivity extends AppCompatActivity {
                 params.put("diagnosis", editDiagnosis.getText().toString());
                 params.put("treatment", editTreatment.getText().toString());
                 params.put("hospitalName", hospitalName);
-                params.put("fileUrl", fileUrl);
+                params.put("fileURL", fileUrl);
+                params.put("hospitalEmail",hospitalEmail);
                 return params;
             }
         };
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
+        navigateToPatientDetails();
     }
-    private void navigateToPatientDetails(String patientEmail) {
+    private void navigateToPatientDetails() {
         Intent intent = new Intent(this, AddPatientInfoActivity.class);
-        intent.putExtra("patientEmail", patientEmail);
-        startActivity(intent);
     }
 }

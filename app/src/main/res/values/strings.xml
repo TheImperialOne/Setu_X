@@ -79,6 +79,7 @@
     <string name="uploaded_file" translatable="false">Uploaded file:</string>
     <string name="uploaded_files_colon" translatable="false">Uploaded Files:</string>
     <string name="nearby_hospitals" translatable="false">NEARBY HOSPITALS</string>
+    <string name="base_url" translatable="false">http://192.168.238.206/</string>
     <string-array name="blood_groups">
         <item>A+</item>
         <item>A-</item>

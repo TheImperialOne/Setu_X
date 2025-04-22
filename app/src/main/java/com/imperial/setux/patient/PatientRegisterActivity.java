@@ -190,7 +190,7 @@ public class PatientRegisterActivity extends AppCompatActivity {
         // Build the request
         RequestBody body = RequestBody.create(payload.toString(), MediaType.parse("application/json; charset=utf-8"));
         Request request = new Request.Builder()
-                .url("http://192.168.0.102:3000/api/register/patient")
+                .url("http://192.168.251.206:3000/api/register/patient")
                 .post(body)
                 .build();
 

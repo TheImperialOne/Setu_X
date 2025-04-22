@@ -1,15 +1,11 @@
 package com.imperial.setux.hospital;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
@@ -25,9 +21,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.imperial.setux.R;
-import com.imperial.setux.patient.Patient;
 import com.imperial.setux.patient.PatientDiagnosis;
-import com.imperial.setux.patient.RecyclerRowAdapter;
 import com.imperial.setux.patient.SelectListener;
 
 import java.util.ArrayList;
@@ -83,9 +77,6 @@ public class ViewHospitalPatients extends AppCompatActivity implements SelectLis
                 arrayList.add(new PatientDiagnosis(Date, HospitalName, Details, Diagnosis, Prescription, DocumentID, Doctor, Treatment));
             }
         });
-        RecyclerRowAdapter recyclerRowAdapter = new RecyclerRowAdapter(this, arrayList, this);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        recyclerView.setAdapter(recyclerRowAdapter);
     }
 
     @SuppressLint("ClickableViewAccessibility")

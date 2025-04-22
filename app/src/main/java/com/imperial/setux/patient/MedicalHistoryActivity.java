@@ -1,151 +1,215 @@
 package com.imperial.setux.patient;
 
-import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.textview.MaterialTextView;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.storage.FileDownloadTask;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.android.material.button.MaterialButton;
 import com.imperial.setux.R;
-import com.imperial.setux.hospital.AddDiagnosisActivity;
+import com.imperial.setux.medicalRecord.MedicalRecord;
+import com.imperial.setux.medicalRecord.MedicalRecordAdapter;
 
-import java.io.File;
-import java.io.IOException;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.List;
 
-public class MedicalHistoryActivity extends AppCompatActivity implements SelectListener {
-    FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-    DocumentReference documentReference;
-    CollectionReference historyReference;
-    RecyclerView recyclerView;
-    ArrayList<PatientDiagnosis> arrayList = new ArrayList<>();
-    private String TAG = "MedicalHistoryActivity";
-    CardView goBack;
-    StorageReference storageReference;
-    String getAadhaar;
+public class MedicalHistoryActivity extends AppCompatActivity {
+    private static final String TAG = "PatientMedicalHistory";
+    private static final String BASE_URL = "http://192.168.251.206:3000/api/records/full/";
+
+    private RecyclerView rvMedicalRecords;
+    private List<MedicalRecord> recordList;
+    private MedicalRecordAdapter adapter;
+    private ProgressDialog progressDialog;
+    private String patientEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_medical_history);
-        getAadhaar = getIntent().getStringExtra("aadhaar");
-        documentReference = firebaseFirestore.collection("Users").document(String.valueOf(getAadhaar));
-        historyReference = documentReference.collection("Medical History");
-        recyclerView = findViewById(R.id.recycleView);
-        goBack = findViewById(R.id.back);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        goBack.setOnClickListener(view -> {
-            onBackPressed();
-        });
-    }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        historyReference.addSnapshotListener(this, (queryDocumentSnapshots, e) -> {
-            if (e != null) {
-                return;
-            }
-            arrayList.clear();
-            for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                PatientDiagnosis patient = documentSnapshot.toObject(PatientDiagnosis.class);
-                patient.setDocumentID(documentSnapshot.getId());
-                String DocumentID = patient.getDocumentID();
-                String Date = patient.getDate();
-                String HospitalName = patient.getHospitalName();
-                String Diagnosis = patient.getDiagnosis();
-                String Details = patient.getDetails();
-                String Prescription = patient.getPrescription();
-                String Doctor = patient.getDoctor();
-                String Treatment = patient.getTreatment();
-                arrayList.add(new PatientDiagnosis(Date, HospitalName, Details, Diagnosis, Prescription, DocumentID, Doctor, Treatment));
-            }
-        });
-        RecyclerRowAdapter recyclerRowAdapter = new RecyclerRowAdapter(this, arrayList, this);
-        recyclerView.setAdapter(recyclerRowAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    @Override
-    public void onItemClicked(PatientDiagnosis patientDiagnosis, View view) {
-        LayoutInflater inflater = (LayoutInflater)
-                getSystemService(LAYOUT_INFLATER_SERVICE);
-        View popupView = inflater.inflate(R.layout.popup_history, null);
-
-        // create the popup window
-        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
-        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-        boolean focusable = true; // lets taps outside the popup also dismiss it
-        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
-
-        // show the popup window
-        // which view you pass in doesn't matter, it is only used for the window token
-        recyclerView.setVisibility(View.INVISIBLE);
-        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
-        MaterialTextView dateMaterialTextView = popupView.findViewById(R.id.dateTextView);
-        MaterialTextView hospitalNameMaterialTextView = popupView.findViewById(R.id.hospitalNameTextView);
-        MaterialTextView diagnosisMaterialTextView = popupView.findViewById(R.id.diagnosisTextView);
-        MaterialTextView detailsMaterialTextView = popupView.findViewById(R.id.detailsTextView);
-        MaterialTextView prescriptionMaterialTextView = popupView.findViewById(R.id.prescriptionTextView);
-        MaterialTextView documentIDMaterialTextView = popupView.findViewById(R.id.documentIDTextView);
-        MaterialTextView treatmentMaterialTextView = popupView.findViewById(R.id.treatmentTextView);
-        ImageView imageView = popupView.findViewById(R.id.imgView);
-        LinearLayout imageGroup = popupView.findViewById(R.id.imageGroup);
-        Log.d("MedicalHistoryActivity.java", getAadhaar);
-
-        storageReference = FirebaseStorage.getInstance().getReferenceFromUrl("gs://setux-1881.appspot.com/images/"+getAadhaar+"/"+patientDiagnosis.getDocumentID());
-        /*storageReference = FirebaseStorage.getInstance().getReferenceFromUrl("gs://setux-1881.appspot.com/images/286549103713/frMiUKJLNzo7RRJh1VFe");*/
-
-        try {
-            File localFile = File.createTempFile("tempfile", ".jpeg");
-            storageReference.getFile(localFile).addOnSuccessListener(taskSnapshot -> {
-                Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
-                imageView.setImageBitmap(bitmap);
-                imageGroup.setVisibility(View.VISIBLE);
-            }).addOnFailureListener(e -> Toast.makeText(getApplicationContext(), "No documents to show", Toast.LENGTH_SHORT).show());
-        } catch (IOException e) {
-            e.printStackTrace();
+        // Get patient email from intent
+        patientEmail = getIntent().getStringExtra("userEmail");
+        if (patientEmail == null || patientEmail.isEmpty()) {
+            showToastAndFinish("No patient email provided");
+            return;
         }
 
-        dateMaterialTextView.setText(patientDiagnosis.getDate());
-        hospitalNameMaterialTextView.setText(patientDiagnosis.getHospitalName());
-        diagnosisMaterialTextView.setText(patientDiagnosis.getDiagnosis());
-        detailsMaterialTextView.setText(patientDiagnosis.getDetails());
-        prescriptionMaterialTextView.setText(patientDiagnosis.getPrescription());
-        documentIDMaterialTextView.setText(patientDiagnosis.getDocumentID());
-        treatmentMaterialTextView.setText(patientDiagnosis.getTreatment());
+        initializeViews();
+        setupRecyclerView();
+        fetchRecordsFromBackend();
+    }
 
-        // dismiss the popup window when touched
-        popupView.setOnTouchListener((v, event) -> {
-            popupWindow.dismiss();
-            recyclerView.setVisibility(View.VISIBLE);
-            return true;
-        });
+    private void initializeViews() {
+        rvMedicalRecords = findViewById(R.id.recycleView);
+
+        // Setup progress dialog
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Loading records...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+    }
+
+    private void setupRecyclerView() {
+        recordList = new ArrayList<>();
+        adapter = new MedicalRecordAdapter(recordList, this);
+        rvMedicalRecords.setLayoutManager(new LinearLayoutManager(this));
+        rvMedicalRecords.setAdapter(adapter);
+    }
+
+    private void fetchRecordsFromBackend() {
+        // Keep the colon prefix and don't encode the @ symbol
+        String url = BASE_URL + ":" + patientEmail;
+        Log.d(TAG, "Final request URL: " + url);
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.GET,
+                url,
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        progressDialog.dismiss();
+                        try {
+                            if (!response.getBoolean("success")) {
+                                showToast("Failed to fetch records: " + response.optString("error"));
+                                return;
+                            }
+
+                            JSONArray recordsArray = response.getJSONArray("records");
+                            recordList.clear();
+
+                            for (int i = 0; i < recordsArray.length(); i++) {
+                                JSONObject recordObj = recordsArray.getJSONObject(i);
+                                MedicalRecord record = new MedicalRecord(
+                                        recordObj.getString("date"),
+                                        recordObj.optString("hospitalName", "Unknown Hospital"),
+                                        recordObj.getString("doctor"),
+                                        recordObj.optString("diagnosis", ""),
+                                        recordObj.optString("details", ""),
+                                        recordObj.optString("treatment", ""),
+                                        recordObj.optString("prescription", ""),
+                                        recordObj.optString("fileURL", "")
+                                );
+                                recordList.add(record);
+                            }
+
+                            adapter.notifyDataSetChanged();
+
+                            if (recordList.isEmpty()) {
+                                showToast("No medical records found");
+                            }
+                        } catch (JSONException e) {
+                            Log.e(TAG, "JSON parsing error", e);
+                            showToast("Error processing records");
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        progressDialog.dismiss();
+                        String errorMsg = "Network error";
+                        if (error.networkResponse != null) {
+                            errorMsg = "Server error: " + error.networkResponse.statusCode;
+                            try {
+                                String responseBody = new String(error.networkResponse.data, "UTF-8");
+                                Log.e(TAG, "Server response: " + responseBody);
+                            } catch (Exception e) {
+                                Log.e(TAG, "Error reading error response", e);
+                            }
+                        }
+                        showToast(errorMsg);
+                        Log.e(TAG, "API request failed", error);
+                    }
+                });
+
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                15000, // 15 seconds timeout
+                2, // Max retries
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        queue.add(request);
+    }
+
+    private void parseResponse(JSONObject response) throws JSONException {
+        if (!response.has("success") || !response.getBoolean("success")) {
+            showToast("Failed to fetch records");
+            return;
+        }
+
+        if (!response.has("records")) {
+            showToast("No records found");
+            return;
+        }
+
+        JSONArray recordsArray = response.getJSONArray("records");
+        recordList.clear();
+
+        for (int i = 0; i < recordsArray.length(); i++) {
+            JSONObject recordObj = recordsArray.getJSONObject(i);
+            MedicalRecord record = new MedicalRecord(
+                    recordObj.optString("date", ""),
+                    recordObj.optString("hospitalName", "Unknown Hospital"),
+                    recordObj.optString("doctor", ""),
+                    recordObj.optString("diagnosis", ""),
+                    recordObj.optString("details", ""),
+                    recordObj.optString("treatment", ""),
+                    recordObj.optString("prescription", ""),
+                    recordObj.optString("fileURL", recordObj.optString("filebaseURL", ""))
+            );
+            recordList.add(record);
+        }
+
+        if (recordList.isEmpty()) {
+            showToast("No medical records available");
+        }
+
+        adapter.notifyDataSetChanged();
+    }
+
+    private void handleNetworkError(VolleyError error) {
+        String errorMsg = "Network error";
+        if (error.networkResponse != null) {
+            errorMsg += " (Status: " + error.networkResponse.statusCode + ")";
+            if (error.networkResponse.data != null) {
+                errorMsg += ": " + new String(error.networkResponse.data);
+            }
+        }
+        Log.e(TAG, errorMsg, error);
+        showToast(errorMsg);
+    }
+
+    private void handleJsonError(JSONException e) {
+        Log.e(TAG, "JSON parsing error", e);
+        showToast("Error processing records");
+    }
+
+    private void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    private void showToastAndFinish(String message) {
+        showToast(message);
+        finish();
     }
 }
